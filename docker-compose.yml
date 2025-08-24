@@ -1,20 +1,31 @@
 services:
-  postgres_db:
-    image: postgres:16
-    container_name: postgres_db
+  mysql_db:
+    image: mysql:8.4
+    container_name: mysql_db
     environment:
-        POSTGRES_DB: autenticacion_db
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: admin
+      MYSQL_DATABASE: autenticacion_db
+      MYSQL_ROOT_PASSWORD: admin
     ports:
-        - "5440:5432"
+      - "3307:3306"
+    command: --require_secure_transport=OFF
     volumes:
-        - ./postgres_data:/var/lib/postgresql/data
+      - ./mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   flyway:
-    image: flyway/flyway
+    image: flyway/flyway:9-alpine
     depends_on:
-      - postgres_db
-    command: -url=jdbc:postgresql://postgres_db:5432/autenticacion_db -user=postgres -password=admin -schemas=public -connectRetries=10 migrate
+      mysql_db:
+        condition: service_healthy
+    command:
+      - -url=jdbc:mysql://mysql_db:3306/autenticacion_db?allowPublicKeyRetrieval=true&useSSL=false
+      - -user=root
+      - -password=admin
+      - migrate
     volumes:
       - ./applications/app-service/src/main/resources/db/migration:/flyway/sql/migration
