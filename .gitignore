@@ -335,6 +335,4 @@ gradle-app.setting
 *.hprof
 build-cache
 
-# Local data
 /postgres_data
-/mysql_data

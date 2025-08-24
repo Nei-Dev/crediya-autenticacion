@@ -13,7 +13,12 @@ spring:
           client-id: myclientid
 adapters:
   r2dbc:
-    url: r2dbc:mysql://root:admin@localhost:3307/autenticacion_db
+    host: localhost
+    port: 5440
+    database: autenticacion_db
+    schema: public
+    username: postgres
+    password: admin
 logging:
   level:
     com:
