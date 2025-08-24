@@ -5,8 +5,8 @@ import reactor.core.publisher.Mono;
 
 public interface UsuarioRepository {
 	
-	Mono<Usuario> registrarUsuarioSolicitante(Usuario usuario);
+	Mono<Usuario> registrarUsuario(Usuario usuario);
 	
-	Mono<Boolean> existsByCorreoElectronico(String correoElectronico);
+	Mono<Usuario> buscarPorCorreoElectronico(String correoElectronico);
 	
 }

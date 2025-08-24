@@ -27,9 +27,9 @@ public class UsuarioData {
 
 	@Column("apellido")
 	private String apellido;
-
-	@Column("documento_identidad")
-	private String documentoIdentidad;
+//
+//	@Column("documento_identidad")
+//	private String documentoIdentidad;
 
 	@Column("correo_electronico")
 	private String correoElectronico;

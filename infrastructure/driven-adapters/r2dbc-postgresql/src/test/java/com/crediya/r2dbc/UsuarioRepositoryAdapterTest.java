@@ -1,5 +1,6 @@
 package com.crediya.r2dbc;
 
+import com.crediya.r2dbc.mapper.UsuarioEntityMapper;
 import com.crediya.r2dbc.usuario.UsuarioReactiveRepository;
 import com.crediya.r2dbc.usuario.UsuarioRepositoryAdapter;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioRepositoryAdapterTest {
-    // TODO: change four you own tests
 
     @InjectMocks
     UsuarioRepositoryAdapter repositoryAdapter;
@@ -26,13 +26,12 @@ class UsuarioRepositoryAdapterTest {
     @Mock
     UsuarioReactiveRepository repository;
 
-    @Mock
-    ObjectMapper mapper;
-
     @Test
     void mustFindValueById() {
+        
+        
 
-        when(repository.findById("1")).thenReturn(Mono.just("test"));
+        when(repository.findById(1L)).thenReturn(Mono.just("test"));
         when(mapper.map("test", Object.class)).thenReturn("test");
 
         Mono<Object> result = repositoryAdapter.findById("1");

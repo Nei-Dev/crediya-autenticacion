@@ -1,4 +1,4 @@
-package com.crediya.usecase.crear_usuario;
+package com.crediya.model.usuario.ports;
 
 import com.crediya.model.usuario.Usuario;
 import reactor.core.publisher.Mono;
