@@ -1,9 +1,8 @@
 package com.crediya.api;
 
 import com.crediya.api.dto.input.CrearUsuarioRequest;
-import com.crediya.model.usuario.RolUsuario;
 import com.crediya.model.usuario.Usuario;
-import com.crediya.usecase.crear_usuario.CrearUsuarioUseCase;
+import com.crediya.usecase.crear_usuario.CrearUsuarioClienteClienteUseCase;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +16,11 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class UsuarioController {
 	
-	private final CrearUsuarioUseCase crearUsuarioUseCase;
+	private final CrearUsuarioClienteClienteUseCase crearUsuarioClienteUseCase;
 	
 	@PostMapping
-	public Mono<Usuario> crearUsuarioSolicitante(@RequestBody CrearUsuarioRequest crearUsuarioRequest) {
-		return crearUsuarioUseCase.execute(Usuario.builder()
+	public Mono<Usuario> crearUsuarioCliente(@RequestBody CrearUsuarioRequest crearUsuarioRequest) {
+		return crearUsuarioClienteUseCase.execute(Usuario.builder()
 			.nombre(crearUsuarioRequest.nombre())
 			.apellidos(crearUsuarioRequest.apellido())
 			.fechaNacimiento(crearUsuarioRequest.fechaNacimiento())
@@ -29,7 +28,6 @@ public class UsuarioController {
 			.telefono(crearUsuarioRequest.telefono())
 			.correoElectronico(crearUsuarioRequest.correoElectronico())
 			.salarioBase(crearUsuarioRequest.salarioBase())
-			.rol(RolUsuario.CLIENTE)
 			.build());
 	}
 }

@@ -1,7 +1,7 @@
 package com.crediya.api.config;
 
 import com.crediya.model.usuario.gateways.UsuarioRepository;
-import com.crediya.usecase.crear_usuario.CrearUsuarioUseCase;
+import com.crediya.usecase.crear_usuario.CrearUsuarioClienteClienteUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Configuration;
 public class UseCaseConfig {
 	
 	@Bean
-	public CrearUsuarioUseCase crearUsuarioUseCase(
+	public CrearUsuarioClienteClienteUseCase crearUsuarioUseCase(
 		UsuarioRepository usuarioRepository
 	) {
-		return new CrearUsuarioUseCase(usuarioRepository);
+		return new CrearUsuarioClienteClienteUseCase(usuarioRepository);
 	}
 }

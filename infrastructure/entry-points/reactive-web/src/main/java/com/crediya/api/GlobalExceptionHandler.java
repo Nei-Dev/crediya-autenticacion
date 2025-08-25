@@ -1,9 +1,9 @@
 package com.crediya.api;
 
 import com.crediya.api.dto.output.ErrorResponse;
-import com.crediya.model.exceptions.RolInvalidoException;
-import com.crediya.model.exceptions.UsuarioInvalidoException;
-import com.crediya.usecase.exceptions.UsuarioYaExisteException;
+import com.crediya.model.exceptions.usuario.RolInvalidoException;
+import com.crediya.model.exceptions.usuario.UsuarioInvalidoException;
+import com.crediya.model.exceptions.usuario.UsuarioYaExisteException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

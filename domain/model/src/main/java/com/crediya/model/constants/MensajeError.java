@@ -12,6 +12,5 @@ public class MensajeError {
 	   "El salario base debe ser un número positivo entre %d y %d",
 	   LimitesSalarioBase.MINIMO, LimitesSalarioBase.MAXIMO
 	);
-	public static final String ROL_USUARIO_VACIO = "El rol del usuario no puede ser nulo";
 	
 }

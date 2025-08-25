@@ -1,6 +1,6 @@
 package com.crediya.r2dbc.usuario;
 
-import com.crediya.model.exceptions.RolInvalidoException;
+import com.crediya.model.exceptions.usuario.RolInvalidoException;
 import com.crediya.model.usuario.RolUsuario;
 import com.crediya.model.usuario.Usuario;
 import com.crediya.model.usuario.gateways.UsuarioRepository;
