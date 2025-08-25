@@ -89,6 +89,11 @@ class CrearUsuarioClienteClienteUseCaseTest {
         StepVerifier.create(useCase.execute(usuarioSalarioInvalido))
                 .expectErrorMatches(e -> e instanceof UsuarioInvalidoException && e.getMessage().equals(MensajeError.SALARIO_BASE_INVALIDO))
                 .verify();
+        
+        usuarioSalarioInvalido.setSalarioBase(-1000);
+        StepVerifier.create(useCase.execute(usuarioSalarioInvalido))
+                .expectErrorMatches(e -> e instanceof UsuarioInvalidoException && e.getMessage().equals(MensajeError.SALARIO_BASE_INVALIDO))
+                .verify();
     }
 }
 
