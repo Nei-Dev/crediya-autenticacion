@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 spring:
   application:
     name: autenticacion
@@ -13,16 +13,16 @@ spring:
           client-id: myclientid
 adapters:
   r2dbc:
-    host: localhost
-    port: 5440
-    database: autenticacion_db
-    schema: public
-    username: postgres
-    password: admin
+    host: ${DB_HOST:localhost}
+    port: ${DB_PORT:5440}
+    database: ${DB_NAME:autenticacion_db}
+    schema: ${DB_SCHEMA:public}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
 logging:
   level:
     com:
-      crediya: TRACE
+      crediya: ${LOG_LEVEL:INFO}
 jwt:
   json-exp-roles: /roles
 management:

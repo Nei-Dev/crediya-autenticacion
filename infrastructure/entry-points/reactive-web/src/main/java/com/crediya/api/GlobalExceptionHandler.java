@@ -1,9 +1,9 @@
 package com.crediya.api;
 
-import com.crediya.api.dto.output.ErrorResponse;
-import com.crediya.model.exceptions.usuario.RolInvalidoException;
-import com.crediya.model.exceptions.usuario.UsuarioInvalidoException;
-import com.crediya.model.exceptions.usuario.UsuarioYaExisteException;
+import com.crediya.api.dto.output.ErrorResponseDTO;
+import com.crediya.model.exceptions.user.AlreadyExistsUserException;
+import com.crediya.model.exceptions.user.InvalidRoleException;
+import com.crediya.model.exceptions.user.InvalidUserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,32 +16,32 @@ import reactor.core.publisher.Mono;
 public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
-	public Mono<ResponseEntity<ErrorResponse>> manejarExcepcionGenerica(Exception ex) {
+	public Mono<ResponseEntity<ErrorResponseDTO>> handleGenericException(Exception ex) {
 		log.error("Unhandled exception occurred: {}", ex.getMessage(), ex);
 		return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-			.body(ErrorResponse.internalError("Ocurrió un error interno en el servidor")));
+			.body(ErrorResponseDTO.internalError("Ocurrió un error interno en el servidor")));
 	}
 	
-	@ExceptionHandler(UsuarioInvalidoException.class)
-	public Mono<ResponseEntity<ErrorResponse>> manejarRolInvalido(UsuarioInvalidoException ex) {
-		log.warn("UsuarioInvalidoException: {}", ex.getMessage());
-		ErrorResponse response = ErrorResponse.badRequest(ex.getMessage());
+	@ExceptionHandler(InvalidUserException.class)
+	public Mono<ResponseEntity<ErrorResponseDTO>> manejarRolInvalido(InvalidUserException ex) {
+		log.warn("InvalidUserException: {}", ex.getMessage());
+		ErrorResponseDTO response = ErrorResponseDTO.badRequest(ex.getMessage());
 		return Mono.just(ResponseEntity.status(response.getCodigo())
 			.body(response));
 	}
 	
-	@ExceptionHandler(UsuarioYaExisteException.class)
-	public Mono<ResponseEntity<ErrorResponse>> manejarRolInvalido(UsuarioYaExisteException ex) {
-		log.warn("UsuarioYaExisteException: {}", ex.getMessage());
-		ErrorResponse response = ErrorResponse.badRequest(ex.getMessage());
+	@ExceptionHandler(AlreadyExistsUserException.class)
+	public Mono<ResponseEntity<ErrorResponseDTO>> manejarRolInvalido(AlreadyExistsUserException ex) {
+		log.warn("AlreadyExistsUserException: {}", ex.getMessage());
+		ErrorResponseDTO response = ErrorResponseDTO.badRequest(ex.getMessage());
 		return Mono.just(ResponseEntity.status(response.getCodigo())
 			.body(response));
 	}
 	
-	@ExceptionHandler(RolInvalidoException.class)
-	public Mono<ResponseEntity<ErrorResponse>> manejarRolInvalido(RolInvalidoException ex) {
-		log.warn("RolInvalidoException: {}", ex.getMessage());
-		ErrorResponse response = ErrorResponse.badRequest(ex.getMessage());
+	@ExceptionHandler(InvalidRoleException.class)
+	public Mono<ResponseEntity<ErrorResponseDTO>> manejarRolInvalido(InvalidRoleException ex) {
+		log.warn("InvalidRoleException: {}", ex.getMessage());
+		ErrorResponseDTO response = ErrorResponseDTO.badRequest(ex.getMessage());
 		return Mono.just(ResponseEntity.status(response.getCodigo())
 			.body(response));
 	}
