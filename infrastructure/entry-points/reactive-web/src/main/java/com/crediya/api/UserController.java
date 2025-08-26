@@ -2,11 +2,8 @@ package com.crediya.api;
 
 import com.crediya.api.contants.ResponseMessage;
 import com.crediya.api.contants.swagger.user.UserDocApi;
-import com.crediya.api.dto.input.ApiResponseDTO;
 import com.crediya.api.dto.input.user.CreateUserRequest;
-import com.crediya.api.dto.input.user.UserApiResponse;
-import com.crediya.api.dto.input.user.UserResponseDTO;
-import com.crediya.api.dto.output.ErrorResponseDTO;
+import com.crediya.api.dto.input.user.UserApiResponseDTO;
 import com.crediya.api.mapper.UserEntityMapper;
 import com.crediya.api.mapper.UserResponseMapper;
 import com.crediya.usecase.create_user.CreateUserClientUseCase;
@@ -39,37 +36,19 @@ public class UserController {
 				description = UserDocApi.DESCRIPTION_CREATED,
 				content = @Content(
 					schema = @Schema(
-						implementation = UserApiResponse.class
-					)
-				)
-			),
-			@ApiResponse(
-				responseCode = "400",
-				description = UserDocApi.DESCRIPTION_BAD_REQUEST,
-				content = @Content(
-					schema = @Schema(
-						implementation = ErrorResponseDTO.class
-					)
-				)
-			),
-			@ApiResponse(
-				responseCode = "500",
-				description = UserDocApi.DESCRIPTION_INTERNAL_ERROR,
-				content = @Content(
-					schema = @Schema(
-						implementation = ErrorResponseDTO.class
+						implementation = UserApiResponseDTO.class
 					)
 				)
 			)
 		}
 	)
 	@PostMapping
-	public Mono<ResponseEntity<ApiResponseDTO<UserResponseDTO>>> crearUsuarioCliente(
+	public Mono<ResponseEntity<UserApiResponseDTO>> crearUsuarioCliente(
 		@RequestBody
 		CreateUserRequest createUserRequest
 	) {
 		return crearUsuarioClienteUseCase.execute(UserEntityMapper.INSTANCE.toUser(createUserRequest))
 			.map(userCreated -> ResponseEntity.status(HttpStatus.CREATED)
-				.body(ApiResponseDTO.of(UserResponseMapper.INSTANCE.toUserResponse(userCreated), ResponseMessage.USER_CREATED)));
+				.body(UserApiResponseDTO.of(UserResponseMapper.INSTANCE.toUserResponse(userCreated), ResponseMessage.USER_CREATED)));
 	}
 }

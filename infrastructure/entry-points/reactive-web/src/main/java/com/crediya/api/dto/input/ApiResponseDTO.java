@@ -1,15 +1,15 @@
 package com.crediya.api.dto.input;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponseDTO<T> {
-	private T data;
-	private String message;
+	protected T data;
+	protected String message;
 	
 	public static <T> ApiResponseDTO<T> of(T data, String message) {
 		return ApiResponseDTO.<T>builder()
