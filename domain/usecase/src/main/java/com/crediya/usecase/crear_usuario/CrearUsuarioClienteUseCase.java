@@ -15,11 +15,11 @@ import reactor.core.publisher.Mono;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
-public class CrearUsuarioClienteClienteUseCase implements ICrearUsuarioClienteUseCase {
+public class CrearUsuarioClienteUseCase implements ICrearUsuarioClienteUseCase {
 	
 	private final UsuarioRepository usuarioRepository;
 	
-	private final Logger logger = Logger.getLogger(CrearUsuarioClienteClienteUseCase.class.getName());
+	private final Logger logger = Logger.getLogger(CrearUsuarioClienteUseCase.class.getName());
 	
 	@Override
 	public Mono<Usuario> execute(Usuario usuario) {
@@ -33,20 +33,20 @@ public class CrearUsuarioClienteClienteUseCase implements ICrearUsuarioClienteUs
 		usuario.setRol(RolUsuario.CLIENTE);
 		
 		return usuarioRepository.buscarPorCorreoElectronico(usuario.getCorreoElectronico())
-			.doOnSubscribe(sub -> logger.info("CrearUsuarioClienteClienteUseCase - Verificando si el usuario con correo " + usuario.getCorreoElectronico() + " existe"))
+			.doOnSubscribe(sub -> logger.info("CrearUsuarioClienteUseCase - Verificando si el usuario con correo " + usuario.getCorreoElectronico() + " existe"))
 			.hasElement()
 			.doOnNext(existe -> logger.info(
-				"CrearUsuarioClienteClienteUseCase - Usuario con correo " + usuario.getCorreoElectronico() + ( Boolean.TRUE.equals(existe) ? " existe" : " no existe" )))
-			.doOnError(error -> logger.severe("CrearUsuarioClienteClienteUseCase - Error al verificar si el usuario con correo " + usuario.getCorreoElectronico()))
+				"CrearUsuarioClienteUseCase - Usuario con correo " + usuario.getCorreoElectronico() + ( Boolean.TRUE.equals(existe) ? " existe" : " no existe" )))
+			.doOnError(error -> logger.severe("CrearUsuarioClienteUseCase - Error al verificar si el usuario con correo " + usuario.getCorreoElectronico()))
 			.flatMap(usuarioExiste -> {
 				if (Boolean.TRUE.equals(usuarioExiste)) {
 					return Mono.error(new UsuarioYaExisteException("El usuario con correo " + usuario.getCorreoElectronico() + " ya existe"));
 				}
 				return usuarioRepository.registrarUsuario(usuario)
-					.doOnSubscribe(sub -> logger.info("CrearUsuarioClienteClienteUseCase - Registrando usuario con correo " + usuario.getCorreoElectronico()))
-					.doOnSuccess(usuarioGuardado -> logger.info("CrearUsuarioClienteClienteUseCase - Usuario registrado con ID " + usuarioGuardado.getIdUsuario()))
+					.doOnSubscribe(sub -> logger.info("CrearUsuarioClienteUseCase - Registrando usuario con correo " + usuario.getCorreoElectronico()))
+					.doOnSuccess(usuarioGuardado -> logger.info("CrearUsuarioClienteUseCase - Usuario registrado con ID " + usuarioGuardado.getIdUsuario()))
 					.doOnError(error -> logger.severe(
-						"CrearUsuarioClienteClienteUseCase - Error al registrar el usuario con correo " + usuario.getCorreoElectronico() + ": " + error.getMessage()));
+						"CrearUsuarioClienteUseCase - Error al registrar el usuario con correo " + usuario.getCorreoElectronico() + ": " + error.getMessage()));
 			});
 	}
 	

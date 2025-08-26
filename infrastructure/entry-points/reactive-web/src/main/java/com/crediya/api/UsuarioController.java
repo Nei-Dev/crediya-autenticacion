@@ -2,7 +2,7 @@ package com.crediya.api;
 
 import com.crediya.api.dto.input.CrearUsuarioRequest;
 import com.crediya.model.usuario.Usuario;
-import com.crediya.usecase.crear_usuario.CrearUsuarioClienteClienteUseCase;
+import com.crediya.usecase.crear_usuario.CrearUsuarioClienteUseCase;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 public class UsuarioController {
 	
-	private final CrearUsuarioClienteClienteUseCase crearUsuarioClienteUseCase;
+	private final CrearUsuarioClienteUseCase crearUsuarioClienteUseCase;
 	
 	@Operation(
         summary = "Crear usuario cliente",

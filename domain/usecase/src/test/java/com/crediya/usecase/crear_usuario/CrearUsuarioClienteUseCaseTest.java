@@ -19,10 +19,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CrearUsuarioClienteClienteUseCaseTest {
+class CrearUsuarioClienteUseCaseTest {
     
     @InjectMocks
-    private CrearUsuarioClienteClienteUseCase useCase;
+    private CrearUsuarioClienteUseCase useCase;
     
     @Mock
     private UsuarioRepository usuarioRepository;
