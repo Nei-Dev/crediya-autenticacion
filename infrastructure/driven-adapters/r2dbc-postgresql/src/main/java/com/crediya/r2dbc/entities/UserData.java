@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -32,7 +33,7 @@ public class UserData {
 	private String email;
 
 	@Column("salario_base")
-	private Integer salaryBase;
+	private BigDecimal salaryBase;
 
 	@Column("fecha_nacimiento")
 	private LocalDate birthDate;

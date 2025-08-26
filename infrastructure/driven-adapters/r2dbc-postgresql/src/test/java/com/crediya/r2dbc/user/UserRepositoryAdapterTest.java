@@ -17,6 +17,7 @@ import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +47,7 @@ class UserRepositoryAdapterTest {
 		String direccion = "Calle Falsa 123";
 		String telefono = "555-1234";
 		String correoElectronico = "juan@perez.com";
-		Integer salarioBase = 5_000_000;
+		BigDecimal salarioBase = BigDecimal.valueOf(5_000_000);
 		
 		roleData = RoleData.builder()
 			.id(3L)
@@ -93,13 +94,13 @@ class UserRepositoryAdapterTest {
 				.equals("Calle Falsa 123") && u.getPhone()
 				.equals("555-1234") && u.getEmail()
 				.equals("juan@perez.com") && u.getSalaryBase()
-				.equals(5_000_000) && u.getRole() == UserRole.CLIENT)
+				.equals(BigDecimal.valueOf(5_000_000)) && u.getRole() == UserRole.CLIENT)
 			.verifyComplete();
 	}
 	
 	@Test
 	void shouldThrowExceptionIfRoleNotExists() {
-		when(rolReactiveRepository.findByName("CLIENTE")).thenReturn(Mono.empty());
+		when(rolReactiveRepository.findByName("CLIENT")).thenReturn(Mono.empty());
 		when(transactionalOperator.transactional(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
 		
 		StepVerifier.create(adapter.createUser(user))

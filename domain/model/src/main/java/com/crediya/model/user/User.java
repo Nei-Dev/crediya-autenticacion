@@ -2,6 +2,7 @@ package com.crediya.model.user;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -18,7 +19,7 @@ public class User {
 	private String address;
 	private String phone;
 	private String email;
-	private Integer salaryBase;
+	private BigDecimal salaryBase;
 	private UserRole role;
 
 }

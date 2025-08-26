@@ -11,6 +11,7 @@ public interface UserResponseMapper {
 	
 	UserResponseMapper INSTANCE = Mappers.getMapper(UserResponseMapper.class);
 	
+	@Mapping(target = "id", source = "idUser")
 	@Mapping(target = "fullname", expression = "java(user.getName() + \" \" + user.getLastname())")
 	UserResponseDTO toUserResponse(User user);
 }

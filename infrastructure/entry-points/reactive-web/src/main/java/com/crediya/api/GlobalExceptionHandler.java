@@ -1,7 +1,7 @@
 package com.crediya.api;
 
-import com.crediya.api.contants.ErrorMessage;
-import com.crediya.api.contants.swagger.DocApi;
+import com.crediya.api.constants.ErrorMessage;
+import com.crediya.api.constants.swagger.DocApi;
 import com.crediya.api.dto.output.ErrorResponseDTO;
 import com.crediya.model.exceptions.BusinessException;
 import io.swagger.v3.oas.annotations.media.Content;

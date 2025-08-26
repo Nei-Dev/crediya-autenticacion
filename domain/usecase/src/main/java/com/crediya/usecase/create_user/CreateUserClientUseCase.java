@@ -12,6 +12,8 @@ import com.crediya.model.user.ports.ICreateUserClientUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
+
 @RequiredArgsConstructor
 public class CreateUserClientUseCase implements ICreateUserClientUseCase {
 	
@@ -70,8 +72,8 @@ public class CreateUserClientUseCase implements ICreateUserClientUseCase {
 		}
 	}
 	
-	private void validateSalaryBase(Integer salarioBase) {
-		if (salarioBase == null || salarioBase < SalaryBaseLimits.MIN || salarioBase > SalaryBaseLimits.MAX) {
+	private void validateSalaryBase(BigDecimal salarioBase) {
+		if (salarioBase == null || salarioBase.compareTo(SalaryBaseLimits.MIN) < 0 || salarioBase.compareTo(SalaryBaseLimits.MAX) > 0) {
 			throw new InvalidUserException(ErrorMessage.INVALID_SALARY_BASE);
 		}
 	}

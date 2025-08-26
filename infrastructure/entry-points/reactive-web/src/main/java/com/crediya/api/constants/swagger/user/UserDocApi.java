@@ -1,4 +1,4 @@
-package com.crediya.api.contants.swagger.user;
+package com.crediya.api.constants.swagger.user;
 
 public class UserDocApi {
 	

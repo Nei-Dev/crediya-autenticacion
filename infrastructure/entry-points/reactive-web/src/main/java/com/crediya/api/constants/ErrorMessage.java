@@ -1,4 +1,4 @@
-package com.crediya.api.contants;
+package com.crediya.api.constants;
 
 public class ErrorMessage {
 	

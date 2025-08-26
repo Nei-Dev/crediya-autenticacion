@@ -1,7 +1,7 @@
 package com.crediya.api;
 
-import com.crediya.api.contants.ResponseMessage;
-import com.crediya.api.contants.swagger.user.UserDocApi;
+import com.crediya.api.constants.ResponseMessage;
+import com.crediya.api.constants.swagger.user.UserDocApi;
 import com.crediya.api.dto.input.user.CreateUserRequest;
 import com.crediya.api.dto.input.user.UserApiResponseDTO;
 import com.crediya.api.mapper.UserEntityMapper;
@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import static com.crediya.api.constants.paths.BasePath.USER_PATH;
+
 @RestController
-@RequestMapping(value = "/api/v1/usuarios", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = USER_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class UserController {
 	
@@ -43,7 +45,7 @@ public class UserController {
 		}
 	)
 	@PostMapping
-	public Mono<ResponseEntity<UserApiResponseDTO>> crearUsuarioCliente(
+	public Mono<ResponseEntity<UserApiResponseDTO>> createUserClient(
 		@RequestBody
 		CreateUserRequest createUserRequest
 	) {

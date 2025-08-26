@@ -12,7 +12,7 @@ CREATE TABLE usuario
     apellido           VARCHAR(100)               NOT NULL,
     id_rol             BIGINT REFERENCES rol (id) NOT NULL,
     correo_electronico VARCHAR(150)               NOT NULL UNIQUE,
-    salario_base       INTEGER,
+    salario_base       NUMERIC,
     fecha_nacimiento   DATE,
     direccion          VARCHAR(255),
     telefono           VARCHAR(20)

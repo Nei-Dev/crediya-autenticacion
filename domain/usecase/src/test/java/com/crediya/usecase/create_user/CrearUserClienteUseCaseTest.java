@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +34,7 @@ class CrearUserClienteUseCaseTest {
         user.setName("Juan");
         user.setLastname("Perez");
         user.setEmail("juan.perez@correo.com");
-        user.setSalaryBase(SalaryBaseLimits.MIN + 1000);
+        user.setSalaryBase(SalaryBaseLimits.MIN.add(BigDecimal.valueOf(1000)));
         return user;
     }
 
@@ -89,12 +91,12 @@ class CrearUserClienteUseCaseTest {
                 .verify();
 
         User userSalarayInvalid = validUser();
-        userSalarayInvalid.setSalaryBase(SalaryBaseLimits.MIN - 1);
+        userSalarayInvalid.setSalaryBase(SalaryBaseLimits.MAX.add(BigDecimal.valueOf(1)));
         StepVerifier.create(useCase.execute(userSalarayInvalid))
                 .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(ErrorMessage.INVALID_SALARY_BASE))
                 .verify();
         
-        userSalarayInvalid.setSalaryBase(-1000);
+        userSalarayInvalid.setSalaryBase(SalaryBaseLimits.MIN.subtract(BigDecimal.valueOf(1)));
         StepVerifier.create(useCase.execute(userSalarayInvalid))
                 .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(ErrorMessage.INVALID_SALARY_BASE))
                 .verify();

@@ -1,4 +1,4 @@
-package com.crediya.api.contants.swagger;
+package com.crediya.api.constants.swagger;
 
 public class DocApi {
 	
