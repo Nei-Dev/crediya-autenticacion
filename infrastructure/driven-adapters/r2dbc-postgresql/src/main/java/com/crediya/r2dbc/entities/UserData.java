@@ -13,34 +13,37 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("usuario")
+@Table("crediya_user")
 public class UserData {
 	
 	@Id
 	@Column("id")
 	private Long id;
 
-	@Column("id_rol")
+	@Column("id_role")
 	private Long idRole;
 
-	@Column("nombre")
+	@Column("name")
 	private String name;
 
-	@Column("apellido")
+	@Column("lastname")
 	private String lastname;
 
-	@Column("correo_electronico")
+	@Column("email")
 	private String email;
 
-	@Column("salario_base")
+	@Column("salary_base")
 	private BigDecimal salaryBase;
 
-	@Column("fecha_nacimiento")
+	@Column("birth_date")
 	private LocalDate birthDate;
 
-	@Column("direccion")
+	@Column("address")
 	private String address;
 
-	@Column("telefono")
+	@Column("phone")
 	private String phone;
+	
+	@Column("identification")
+	private String identification;
 }

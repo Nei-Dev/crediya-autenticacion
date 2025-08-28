@@ -7,6 +7,8 @@ public interface UserRepository {
 	
 	Mono<User> createUser(User user);
 	
-	Mono<User> getByEmail(String correoElectronico);
+	Mono<User> findByEmail(String correoElectronico);
+	
+	Mono<User> findByIdentification(String identification);
 	
 }

@@ -2,9 +2,9 @@ package com.crediya.api;
 
 import com.crediya.api.config.UseCaseConfig;
 import com.crediya.api.dto.input.user.CreateUserRequest;
-import com.crediya.api.dto.input.user.UserApiResponseDTO;
-import com.crediya.api.dto.input.user.UserResponseDTO;
-import com.crediya.api.dto.output.ErrorResponseDTO;
+import com.crediya.api.dto.output.user.UserApiResponseDTO;
+import com.crediya.api.dto.output.user.UserResponseDTO;
+import com.crediya.api.dto.output.ErrorResponse;
 import com.crediya.model.constants.ErrorMessage;
 import com.crediya.model.exceptions.user.AlreadyExistsUserException;
 import com.crediya.model.user.User;
@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static com.crediya.api.constants.paths.BasePath.USER_PATH;
+import static com.crediya.api.constants.paths.Path.USER_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -127,7 +127,7 @@ class UserControllerTest {
 			.exchange()
 			.expectStatus()
 			.is4xxClientError()
-			.expectBody(ErrorResponseDTO.class)
+			.expectBody(ErrorResponse.class)
 			.value(response -> {
 				assertEquals(ErrorMessage.ALREADY_EXISTS_USER, response.getMensaje());
 				assertEquals(400, response.getCodigo());

@@ -1,6 +1,6 @@
-package com.crediya.api.dto.input.user;
+package com.crediya.api.dto.output.user;
 
-import com.crediya.api.dto.input.ApiResponseDTO;
+import com.crediya.api.dto.output.ApiResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

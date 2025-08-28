@@ -40,9 +40,16 @@ public class UserRepositoryAdapter implements UserRepository {
 	}
 	
 	@Override
-	public Mono<User> getByEmail(String email) {
+	public Mono<User> findByEmail(String email) {
 		return repository.findByEmail(email)
 			.doOnSubscribe(subscription -> log.trace("Searching user in the database: {}", email))
+			.flatMap(this::mapToUser);
+	}
+	
+	@Override
+	public Mono<User> findByIdentification(String identification) {
+		return repository.findByIdentification(identification)
+			.doOnSubscribe(subscription -> log.trace("Searching user in the database by identification: {}", identification))
 			.flatMap(this::mapToUser);
 	}
 	

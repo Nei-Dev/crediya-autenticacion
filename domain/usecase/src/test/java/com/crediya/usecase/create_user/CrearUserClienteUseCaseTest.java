@@ -41,7 +41,7 @@ class CrearUserClienteUseCaseTest {
     @Test
     void shouldCreateUserSuccesfully() {
         User user = validUser();
-        when(userRepository.getByEmail(user.getEmail())).thenReturn(Mono.empty());
+        when(userRepository.findByIdentification(user.getEmail())).thenReturn(Mono.empty());
         when(userRepository.createUser(any(User.class))).thenReturn(Mono.just(user));
 
         StepVerifier.create(useCase.execute(user))
@@ -52,7 +52,7 @@ class CrearUserClienteUseCaseTest {
     @Test
     void shouldThrowExceptionIfUserAlreadyExists() {
         User user = validUser();
-        when(userRepository.getByEmail(user.getEmail())).thenReturn(Mono.just(user));
+        when(userRepository.findByIdentification(user.getEmail())).thenReturn(Mono.just(user));
 
         StepVerifier.create(useCase.execute(user))
                 .expectErrorMatches(e -> e instanceof AlreadyExistsUserException && e.getMessage().equals(ErrorMessage.ALREADY_EXISTS_USER))

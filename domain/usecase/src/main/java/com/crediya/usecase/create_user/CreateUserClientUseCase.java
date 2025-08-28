@@ -12,69 +12,60 @@ import com.crediya.model.user.ports.ICreateUserClientUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-
 @RequiredArgsConstructor
 public class CreateUserClientUseCase implements ICreateUserClientUseCase {
-	
-	private final UserRepository userRepository;
-	
-	@Override
-	public Mono<User> execute(User user) {
-		try {
-			validateUser(user);
-		} catch (InvalidUserException e) {
-			return Mono.error(e);
-		}
 
-		user.setRole(UserRole.CLIENT);
+    private final UserRepository userRepository;
 
-		return userRepository.getByEmail(user.getEmail())
-			.hasElement()
-			.flatMap(userExists -> {
-				if (Boolean.TRUE.equals(userExists)) {
-					return Mono.error(new AlreadyExistsUserException(ErrorMessage.ALREADY_EXISTS_USER));
-				}
-				return userRepository.createUser(user);
-			});
-	}
-
-	private void validateUser(User user) {
-		if (user == null) throw new InvalidUserException(ErrorMessage.NULL_USER);
-
-		validateName(user.getName());
-		validateLastname(user.getLastname());
-		validateEmail(user.getEmail());
-		validateSalaryBase(user.getSalaryBase());
-	}
-	
-	private void validateName(String nombres) {
-		if (nombres == null || nombres.trim()
-			.isEmpty()) {
-			throw new InvalidUserException(ErrorMessage.INVALID_USER_NAME);
-		}
-	}
-	
-	private void validateLastname(String apellidos) {
-		if (apellidos == null || apellidos.trim()
-			.isEmpty()) {
-			throw new InvalidUserException(ErrorMessage.INVALID_USER_LASTNAME);
-		}
-	}
-	
-	private void validateEmail(String correoElectronico) {
-		if (correoElectronico == null || correoElectronico.trim()
-			.isEmpty()) {
-			throw new InvalidUserException(ErrorMessage.NULL_EMAIL);
-		}
-		if (!correoElectronico.matches(Regex.EMAIL)) {
-			throw new InvalidUserException(ErrorMessage.INVALID_EMAIL);
-		}
-	}
-	
-	private void validateSalaryBase(BigDecimal salarioBase) {
-		if (salarioBase == null || salarioBase.compareTo(SalaryBaseLimits.MIN) < 0 || salarioBase.compareTo(SalaryBaseLimits.MAX) > 0) {
-			throw new InvalidUserException(ErrorMessage.INVALID_SALARY_BASE);
-		}
-	}
+    @Override
+    public Mono<User> execute(User user) {
+        return validateUser(user)
+                .flatMap(this::checkIfUserExists)
+                .flatMap(this::setDefaultRole)
+                .flatMap(userRepository::createUser);
+    }
+    
+    private Mono<User> validateUser(User user) {
+        return Mono.justOrEmpty(user)
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.NULL_USER)))
+                .filter(u -> u.getName() != null
+                    && !u.getName().trim().isEmpty())
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.INVALID_USER_NAME)))
+                .filter(u -> u.getLastname() != null
+                    && !u.getLastname().trim().isEmpty())
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.INVALID_USER_LASTNAME)))
+                .filter(u -> u.getEmail() != null
+                    && !u.getEmail().trim().isEmpty())
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.NULL_EMAIL)))
+                .filter(u -> u.getEmail().matches(Regex.EMAIL))
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.INVALID_EMAIL)))
+                .filter(u -> u.getSalaryBase() != null
+                    && u.getSalaryBase().compareTo(SalaryBaseLimits.MIN) >= 0
+                    && u.getSalaryBase().compareTo(SalaryBaseLimits.MAX) <= 0)
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.INVALID_SALARY_BASE)))
+                .filter(u -> u.getIdentification() != null
+                    && !u.getIdentification().trim().isEmpty())
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.IDENTIFICATION_NOT_BLANK)))
+                .filter(u -> u.getIdentification().matches(Regex.IDENTIFICATION))
+                .switchIfEmpty(Mono.error(new InvalidUserException(ErrorMessage.INVALID_IDENTIFICATION)));
+    }
+    
+    private Mono<User> checkIfUserExists(User user) {
+        return Mono.zip(
+            userRepository.findByEmail(user.getEmail()).hasElement(),
+            userRepository.findByIdentification(user.getIdentification()).hasElement()
+        ).flatMap(results -> {
+            boolean existByEmail = results.getT1();
+            boolean existByIdentification = results.getT2();
+            if (existByEmail || existByIdentification) {
+                return Mono.error(new AlreadyExistsUserException(ErrorMessage.ALREADY_EXISTS_USER));
+            }
+            return Mono.just(user);
+        });
+    }
+    
+    private Mono<User> setDefaultRole(User user) {
+        user.setRole(UserRole.CLIENT);
+        return Mono.just(user);
+    }
 }

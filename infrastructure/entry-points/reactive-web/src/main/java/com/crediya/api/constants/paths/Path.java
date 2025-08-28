@@ -1,8 +1,8 @@
 package com.crediya.api.constants.paths;
 
-public class BasePath {
+public class Path {
 	
-	private BasePath () {}
+	private Path() {}
 	
 	public static final String BASE_PATH = "/api/v1";
 	

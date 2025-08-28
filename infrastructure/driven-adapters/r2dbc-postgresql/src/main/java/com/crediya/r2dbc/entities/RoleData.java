@@ -10,17 +10,17 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "rol")
+@Table(name = "crediya_role")
 public class RoleData {
 	
 	@Id
 	@Column("id")
 	private Long id;
 	
-	@Column("nombre")
+	@Column("name")
 	private String name;
 	
-	@Column("descripcion")
+	@Column("description")
 	private String description;
 	
 }

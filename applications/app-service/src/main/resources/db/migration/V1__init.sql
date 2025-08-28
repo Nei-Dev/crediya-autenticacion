@@ -1,19 +1,20 @@
-CREATE TABLE rol
+CREATE TABLE crediya_role
 (
     id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre      VARCHAR(50) NOT NULL UNIQUE,
-    descripcion VARCHAR(255)
+    name        VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255)
 );
 
-CREATE TABLE usuario
+CREATE TABLE crediya_user
 (
-    id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre             VARCHAR(100)               NOT NULL,
-    apellido           VARCHAR(100)               NOT NULL,
-    id_rol             BIGINT REFERENCES rol (id) NOT NULL,
-    correo_electronico VARCHAR(150)               NOT NULL UNIQUE,
-    salario_base       NUMERIC,
-    fecha_nacimiento   DATE,
-    direccion          VARCHAR(255),
-    telefono           VARCHAR(20)
+    id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name           VARCHAR(100)               NOT NULL,
+    lastname       VARCHAR(100)               NOT NULL,
+    id_role        BIGINT REFERENCES crediya_role (id) NOT NULL,
+    email          VARCHAR(150)               NOT NULL UNIQUE,
+    identification VARCHAR(20)                NOT NULL UNIQUE,
+    salary_base    NUMERIC,
+    birth_date     DATE,
+    address         VARCHAR(255),
+    phone          VARCHAR(20)
 );

@@ -1,4 +1,4 @@
-INSERT INTO rol (nombre, descripcion) VALUES
-('ADMIN', 'Administrador con acceso completo'),
-('ADVISOR', 'Asesor con acceso a gestión de clientes'),
-('CLIENT', 'Cliente con acceso a solicitudes de servicios');
+INSERT INTO crediya_role (name, description) VALUES
+('ADMIN', 'Admin with full access to the system'),
+('ADVISOR', 'Advisor with access to client management and service requests'),
+('CLIENT', 'Client with access to personal account and service requests');

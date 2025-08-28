@@ -1,6 +1,6 @@
 package com.crediya.api.mapper;
 
-import com.crediya.api.dto.input.user.UserResponseDTO;
+import com.crediya.api.dto.output.user.UserResponseDTO;
 import com.crediya.model.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

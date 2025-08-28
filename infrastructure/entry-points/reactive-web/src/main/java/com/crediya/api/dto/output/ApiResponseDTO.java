@@ -1,4 +1,4 @@
-package com.crediya.api.dto.input;
+package com.crediya.api.dto.output;
 
 import lombok.*;
 
