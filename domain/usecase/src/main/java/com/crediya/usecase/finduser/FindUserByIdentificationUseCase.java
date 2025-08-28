@@ -1,4 +1,4 @@
-package com.crediya.usecase.create_user;
+package com.crediya.usecase.finduser;
 
 import com.crediya.model.exceptions.user.InvalidUserException;
 import com.crediya.model.exceptions.user.UserNotFoundException;
@@ -21,7 +21,7 @@ public class FindUserByIdentificationUseCase implements IFindUserByIdentificatio
 	@Override
 	public Mono<User> execute(String identification) {
 		return Mono.justOrEmpty(identification)
-				.filter(idNumber -> Objects.isNull(idNumber) || !idNumber.trim().isEmpty())
+				.filter(idNumber -> Objects.nonNull(idNumber) && !idNumber.trim().isEmpty())
 				.switchIfEmpty(Mono.error(new InvalidUserException(INVALID_IDENTIFICATION)))
 				.flatMap(userRepository::findByIdentification)
 				.switchIfEmpty(Mono.error(new UserNotFoundException(USER_NOT_FOUND)));

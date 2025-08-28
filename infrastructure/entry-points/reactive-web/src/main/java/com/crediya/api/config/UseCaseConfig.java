@@ -1,8 +1,8 @@
 package com.crediya.api.config;
 
 import com.crediya.model.user.gateways.UserRepository;
-import com.crediya.usecase.create_user.CreateUserClientUseCase;
-import com.crediya.usecase.create_user.FindUserByIdentificationUseCase;
+import com.crediya.usecase.createuser.CreateUserClientUseCase;
+import com.crediya.usecase.finduser.FindUserByIdentificationUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -8,7 +8,7 @@ import com.crediya.api.dto.output.ErrorResponse;
 import com.crediya.model.constants.ErrorMessage;
 import com.crediya.model.exceptions.user.AlreadyExistsUserException;
 import com.crediya.model.user.User;
-import com.crediya.usecase.create_user.CreateUserClientUseCase;
+import com.crediya.usecase.createuser.CreateUserClientUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

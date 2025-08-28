@@ -1,4 +1,4 @@
-package com.crediya.usecase.create_user;
+package com.crediya.usecase.createuser;
 
 import com.crediya.model.constants.ErrorMessage;
 import com.crediya.model.constants.Regex;
