@@ -59,6 +59,7 @@ class UserControllerTest {
 		String phone = "555-1234";
 		String email = "john.doe@mail.com";
 		BigDecimal baseSalary = BigDecimal.valueOf(5_000_000);
+		String identification = "1234567890";
 		
 		createUserRequest = new CreateUserRequest(
 			name,
@@ -67,7 +68,8 @@ class UserControllerTest {
 			address,
 			phone,
 			email,
-			baseSalary
+			baseSalary,
+			identification
 		);
 		
 		userSaved = User.builder().idUser(1L).name(name).lastname(lastname).birthDate(birthDate).address(address).phone(phone).email(email).salaryBase(baseSalary).build();
@@ -129,8 +131,8 @@ class UserControllerTest {
 			.is4xxClientError()
 			.expectBody(ErrorResponse.class)
 			.value(response -> {
-				assertEquals(ErrorMessage.ALREADY_EXISTS_USER, response.getMensaje());
-				assertEquals(400, response.getCodigo());
+				assertEquals(ErrorMessage.ALREADY_EXISTS_USER, response.getMessage());
+				assertEquals(400, response.getCode());
 			});
 	}
 }

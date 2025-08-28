@@ -20,6 +20,10 @@ public class ErrorResponse {
 		return new ErrorResponse(message, HttpStatus.BAD_REQUEST.value());
 	}
 	
+	public static ErrorResponse notFound(String message) {
+		return new ErrorResponse(message, HttpStatus. NOT_FOUND.value());
+	}
+	
 	public static ErrorResponse internalServerError(String message) {
 		return new ErrorResponse(message, HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}

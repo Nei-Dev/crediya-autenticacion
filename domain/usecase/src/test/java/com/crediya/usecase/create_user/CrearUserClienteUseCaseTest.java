@@ -35,13 +35,15 @@ class CrearUserClienteUseCaseTest {
         user.setLastname("Perez");
         user.setEmail("juan.perez@correo.com");
         user.setSalaryBase(SalaryBaseLimits.MIN.add(BigDecimal.valueOf(1000)));
+        user.setIdentification("1234567890");
         return user;
     }
 
     @Test
     void shouldCreateUserSuccesfully() {
         User user = validUser();
-        when(userRepository.findByIdentification(user.getEmail())).thenReturn(Mono.empty());
+        when(userRepository.findByIdentification(user.getIdentification())).thenReturn(Mono.empty());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Mono.empty());
         when(userRepository.createUser(any(User.class))).thenReturn(Mono.just(user));
 
         StepVerifier.create(useCase.execute(user))
@@ -52,7 +54,8 @@ class CrearUserClienteUseCaseTest {
     @Test
     void shouldThrowExceptionIfUserAlreadyExists() {
         User user = validUser();
-        when(userRepository.findByIdentification(user.getEmail())).thenReturn(Mono.just(user));
+        when(userRepository.findByIdentification(user.getIdentification())).thenReturn(Mono.just(user));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Mono.just(user));
 
         StepVerifier.create(useCase.execute(user))
                 .expectErrorMatches(e -> e instanceof AlreadyExistsUserException && e.getMessage().equals(ErrorMessage.ALREADY_EXISTS_USER))
