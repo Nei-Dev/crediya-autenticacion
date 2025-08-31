@@ -1,15 +1,34 @@
 package com.crediya.api.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import reactor.core.publisher.Mono;
 
-@Log4j2
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Configuration
-//@EnableWebFluxSecurity
-//@EnableReactiveMethodSecurity
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 public class AuthorizationJwt implements WebFluxConfigurer {
 
     private final String issuerUri;
@@ -30,54 +49,55 @@ public class AuthorizationJwt implements WebFluxConfigurer {
         this.mapper = mapper;
     }
 
-//    @Bean
-//    public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
-//        http
-//            .authorizeExchange(authorize -> authorize.anyExchange().permitAll()) // Permitir todas las solicitudes temporalmente
-//            .oauth2ResourceServer(oauth2 ->
-//                    oauth2.jwt(jwtSpec ->
-//                            jwtSpec
-//                            .jwtDecoder(jwtDecoder())
-//                            .jwtAuthenticationConverter(grantedAuthoritiesExtractor())
-//                    )
-//            );
-//        return http.build();
-//    }
-//
-//    public ReactiveJwtDecoder jwtDecoder() {
-//        var defaultValidator = JwtValidators.createDefaultWithIssuer(issuerUri);
-//        var audienceValidator = new JwtClaimValidator<String>(AZP,
-//                azp -> azp != null && !azp.isEmpty() && azp.equals(clientId));
-//        var tokenValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator, audienceValidator);
-//        var jwtDecoder = NimbusReactiveJwtDecoder
-//                .withIssuerLocation(issuerUri)
-//                .build();
-//
-//        jwtDecoder.setJwtValidator(tokenValidator);
-//        return jwtDecoder;
-//    }
-//
-//    public Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
-//        var jwtConverter = new JwtAuthenticationConverter();
-//        jwtConverter.setJwtGrantedAuthoritiesConverter(jwt ->
-//                getRoles(jwt.getClaims(), jsonExpRoles)
-//                .stream()
-//                .map(ROLE::concat)
-//                .map(SimpleGrantedAuthority::new)
-//                .collect(Collectors.toList()));
-//        return new ReactiveJwtAuthenticationConverterAdapter(jwtConverter);
-//    }
-//
-//    private List<String> getRoles(Map<String, Object> claims, String jsonExpClaim){
-//        List<String> roles = List.of();
-//        try {
-//            var json = mapper.writeValueAsString(claims);
-//            var chunk = mapper.readTree(json).at(jsonExpClaim);
-//            return mapper.readerFor(new TypeReference<List<String>>() {})
-//                    .readValue(chunk);
-//        } catch (IOException e) {
-//            log.error(e.getMessage());
-//            return roles;
-//        }
-//    }
+    @Bean
+    public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
+        http
+            .authorizeExchange(authorize -> authorize.anyExchange().permitAll())
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .oauth2ResourceServer(oauth2 ->
+                    oauth2.jwt(jwtSpec ->
+                            jwtSpec
+                            .jwtDecoder(jwtDecoder())
+                            .jwtAuthenticationConverter(grantedAuthoritiesExtractor())
+                    )
+            );
+        return http.build();
+    }
+
+    public ReactiveJwtDecoder jwtDecoder() {
+        var defaultValidator = JwtValidators.createDefaultWithIssuer(issuerUri);
+        var audienceValidator = new JwtClaimValidator<String>(AZP,
+                azp -> azp != null && !azp.isEmpty() && azp.equals(clientId));
+        var tokenValidator = new DelegatingOAuth2TokenValidator<>(defaultValidator, audienceValidator);
+        var jwtDecoder = NimbusReactiveJwtDecoder
+                .withIssuerLocation(issuerUri)
+                .build();
+
+        jwtDecoder.setJwtValidator(tokenValidator);
+        return jwtDecoder;
+    }
+
+    public Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
+        var jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(jwt ->
+                getRoles(jwt.getClaims(), jsonExpRoles)
+                .stream()
+                .map(ROLE::concat)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList()));
+        return new ReactiveJwtAuthenticationConverterAdapter(jwtConverter);
+    }
+
+    private List<String> getRoles(Map<String, Object> claims, String jsonExpClaim){
+        List<String> roles = List.of();
+        try {
+            var json = mapper.writeValueAsString(claims);
+            var chunk = mapper.readTree(json).at(jsonExpClaim);
+            return mapper.readerFor(new TypeReference<List<String>>() {})
+                    .readValue(chunk);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return roles;
+        }
+    }
 }

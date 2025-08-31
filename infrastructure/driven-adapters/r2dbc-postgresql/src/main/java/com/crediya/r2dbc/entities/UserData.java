@@ -46,4 +46,7 @@ public class UserData {
 	
 	@Column("identification")
 	private String identification;
+	
+	@Column("password")
+	private String password;
 }

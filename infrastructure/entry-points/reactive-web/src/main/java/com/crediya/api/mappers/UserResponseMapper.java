@@ -1,4 +1,4 @@
-package com.crediya.api.mapper;
+package com.crediya.api.mappers;
 
 import com.crediya.api.dto.output.user.UserResponseDTO;
 import com.crediya.model.user.User;

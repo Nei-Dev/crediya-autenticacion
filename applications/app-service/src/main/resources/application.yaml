@@ -36,3 +36,10 @@ management:
         enabled: true
 cors:
   allowed-origins: http://localhost:4200,http://localhost:8080
+app:
+  paths:
+    user:
+      user: /api/v1/users
+      userByIdentification: /api/v1/users/identification/{identificationNumber}
+    auth:
+      login: /api/v1/login

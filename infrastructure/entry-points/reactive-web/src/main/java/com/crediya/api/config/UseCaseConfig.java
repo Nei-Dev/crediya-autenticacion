@@ -1,5 +1,6 @@
 package com.crediya.api.config;
 
+import com.crediya.model.user.gateways.PasswordEncoderService;
 import com.crediya.model.user.gateways.UserRepository;
 import com.crediya.model.user.ports.ICreateUserClientUseCase;
 import com.crediya.model.user.ports.IFindUserByIdentificationUseCase;
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class UseCaseConfig {
 	
 	@Bean
-	public ICreateUserClientUseCase createUserClientUseCase(UserRepository userRepository) {
-		return new CreateUserClientUseCase(userRepository);
+	public ICreateUserClientUseCase createUserClientUseCase(UserRepository userRepository, PasswordEncoderService passwordEncoderService) {
+		return new CreateUserClientUseCase(userRepository, passwordEncoderService);
 	}
 	
 	@Bean

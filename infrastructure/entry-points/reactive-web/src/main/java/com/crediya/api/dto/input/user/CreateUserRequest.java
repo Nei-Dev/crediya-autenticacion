@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static com.crediya.api.constants.ValidationMessage.*;
-import static com.crediya.api.constants.ValidationMessage.IDENTIFICATION_NOT_BLANK;
-import static com.crediya.api.constants.ValidationMessage.INVALID_IDENTIFICATION;
 
 public record CreateUserRequest(
         @NotNull(message = NAME_NOT_BLANK)
@@ -41,6 +39,11 @@ public record CreateUserRequest(
         @Size(max = 20, message = IDENTIFICATION_NOT_LARGER_THAN_20)
         @Pattern(regexp = "^\\d+$", message = INVALID_IDENTIFICATION)
         @Positive(message = INVALID_IDENTIFICATION)
-        String identification
+        String identification,
+    
+        @NotNull(message = PASSWORD_NOT_BLANK)
+        @NotBlank(message = PASSWORD_NOT_BLANK)
+        @Size(min = 5, message = PASSWORD_MIN_LENGTH_5)
+        String password
 ) {
 }

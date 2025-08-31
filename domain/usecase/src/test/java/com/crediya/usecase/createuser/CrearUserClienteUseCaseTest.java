@@ -1,6 +1,6 @@
 package com.crediya.usecase.createuser;
 
-import com.crediya.model.constants.SalaryBaseLimits;
+import com.crediya.model.constants.SalaryBaseRules;
 import com.crediya.model.exceptions.user.AlreadyExistsUserException;
 import com.crediya.model.exceptions.user.InvalidUserException;
 import com.crediya.model.user.User;
@@ -34,7 +34,7 @@ class CrearUserClienteUseCaseTest {
             .name("Valid Name")
             .lastname("Valid Lastname")
             .email("name.lastname@example.com")
-            .salaryBase(SalaryBaseLimits.MIN.add(BigDecimal.valueOf(1000)))
+            .salaryBase(SalaryBaseRules.MIN.add(BigDecimal.valueOf(1000)))
             .identification("1234567890")
             .build();
     }
@@ -132,12 +132,12 @@ class CrearUserClienteUseCaseTest {
                 .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(INVALID_SALARY_BASE))
                 .verify();
         
-        userSalarayInvalid.setSalaryBase(SalaryBaseLimits.MAX.add(BigDecimal.valueOf(1)));
+        userSalarayInvalid.setSalaryBase(SalaryBaseRules.MAX.add(BigDecimal.valueOf(1)));
         StepVerifier.create(useCase.execute(userSalarayInvalid))
                 .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(INVALID_SALARY_BASE))
                 .verify();
         
-        userSalarayInvalid.setSalaryBase(SalaryBaseLimits.MIN.subtract(BigDecimal.valueOf(1)));
+        userSalarayInvalid.setSalaryBase(SalaryBaseRules.MIN.subtract(BigDecimal.valueOf(1)));
         StepVerifier.create(useCase.execute(userSalarayInvalid))
                 .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(INVALID_SALARY_BASE))
                 .verify();

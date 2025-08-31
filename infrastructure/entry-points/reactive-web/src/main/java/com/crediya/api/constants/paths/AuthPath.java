@@ -6,10 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "app.paths.user")
-public class UserPath {
+@ConfigurationProperties(prefix = "app.paths.auth")
+public class AuthPath {
 	
-	private String user;
-	private String userByIdentification;
+	private String login;
 	
 }
