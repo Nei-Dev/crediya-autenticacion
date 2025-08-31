@@ -38,6 +38,7 @@ public record CreateUserRequest(
     
     	@NotNull(message = IDENTIFICATION_NOT_BLANK)
         @NotBlank(message = IDENTIFICATION_NOT_BLANK)
+        @Size(max = 20, message = IDENTIFICATION_NOT_LARGER_THAN_20)
         @Pattern(regexp = "^\\d+$", message = INVALID_IDENTIFICATION)
         @Positive(message = INVALID_IDENTIFICATION)
         String identification

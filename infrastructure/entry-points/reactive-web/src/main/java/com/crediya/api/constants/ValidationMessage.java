@@ -14,6 +14,7 @@ public final class ValidationMessage {
     public static final String BASE_SALARY_NOT_NULL = "Base salary cannot be null";
     public static final String BASE_SALARY_POSITIVE = "Base salary must be a positive number";
     public static final String IDENTIFICATION_NOT_BLANK = "Identification is required and cannot be blank";
+    public static final String IDENTIFICATION_NOT_LARGER_THAN_20 = "Identification cannot be longer than 20 characters";
     public static final String INVALID_IDENTIFICATION = "Identification is invalid";
 
 }
