@@ -1,0 +1,61 @@
+package com.crediya.api;
+
+import com.crediya.api.constants.ResponseMessage;
+import com.crediya.api.dto.input.user.CreateUserRequest;
+import com.crediya.api.dto.output.user.UserApiResponseDTO;
+import com.crediya.api.mappers.UserEntityMapper;
+import com.crediya.api.mappers.UserResponseMapper;
+import com.crediya.model.exceptions.user.InvalidUserException;
+import com.crediya.model.user.ports.ICreateUserClientUseCase;
+import com.crediya.model.user.ports.IFindUserByIdentificationUseCase;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
+
+import static com.crediya.api.constants.ValidationMessage.IDENTIFICATION_NOT_BLANK;
+import static com.crediya.model.constants.ErrorMessage.NULL_USER;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class UserHandler {
+	
+	private final ValidatorApi validatorApi;
+	private final ICreateUserClientUseCase createUserClientUseCase;
+	private final IFindUserByIdentificationUseCase findUserByIdentificationUseCase;
+	
+	public Mono<ServerResponse> createUserClient(ServerRequest serverRequest){
+		return serverRequest.bodyToMono(CreateUserRequest.class)
+			.doOnSubscribe(subscription -> log.trace("Received request to create user: {}", subscription))
+			.switchIfEmpty(Mono.error(new InvalidUserException(NULL_USER)))
+			.flatMap(validatorApi::validate)
+			.map(UserEntityMapper.INSTANCE::toUser)
+			.flatMap(createUserClientUseCase::execute)
+			.doOnSuccess(user -> log.debug("User created successfully: {}", user.getEmail()))
+			.map(UserResponseMapper.INSTANCE::toUserResponse)
+			.flatMap(userResponseDTO -> ServerResponse.status(HttpStatus.CREATED)
+				.bodyValue(UserApiResponseDTO.of(userResponseDTO,
+					ResponseMessage.USER_CREATED
+				))
+			);
+	}
+	
+	public Mono<ServerResponse> findUserByIdentification(ServerRequest serverRequest){
+		return Mono.fromCallable(() -> serverRequest.pathVariable("identificationNumber"))
+			.map(String::trim)
+			.filter(item -> !item.isEmpty())
+			.switchIfEmpty(Mono.error(new InvalidUserException(IDENTIFICATION_NOT_BLANK)))
+			.flatMap(findUserByIdentificationUseCase::execute)
+			.doOnSubscribe(subscription -> log.trace("Received request to find user by identification: {}", subscription))
+			.doOnSuccess(user -> log.debug("User found successfully: {}", user.getEmail()))
+			.map(UserResponseMapper.INSTANCE::toUserResponse)
+			.flatMap(userResponseDTO -> ServerResponse.status(HttpStatus.OK)
+				.bodyValue(userResponseDTO)
+			);
+	}
+	
+}
