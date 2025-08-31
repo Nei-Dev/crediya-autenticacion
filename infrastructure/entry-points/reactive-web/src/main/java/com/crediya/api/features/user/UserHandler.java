@@ -1,10 +1,11 @@
-package com.crediya.api;
+package com.crediya.api.features.user;
 
 import com.crediya.api.constants.ResponseMessage;
 import com.crediya.api.dto.input.user.CreateUserRequest;
 import com.crediya.api.dto.output.user.UserApiResponseDTO;
-import com.crediya.api.mappers.UserEntityMapper;
-import com.crediya.api.mappers.UserResponseMapper;
+import com.crediya.api.helpers.ValidatorApi;
+import com.crediya.api.mappers.user.UserEntityMapper;
+import com.crediya.api.mappers.user.UserResponseMapper;
 import com.crediya.model.exceptions.user.InvalidUserException;
 import com.crediya.model.user.ports.ICreateUserClientUseCase;
 import com.crediya.model.user.ports.IFindUserByIdentificationUseCase;

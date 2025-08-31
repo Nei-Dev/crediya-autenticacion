@@ -1,4 +1,4 @@
-package com.crediya.api.mappers;
+package com.crediya.api.mappers.user;
 
 import com.crediya.api.dto.input.user.CreateUserRequest;
 import com.crediya.model.user.User;

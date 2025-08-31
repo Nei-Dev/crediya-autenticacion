@@ -5,12 +5,6 @@ spring:
     name: autenticacion
   devtools:
     add-properties: false
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://idp.example.com/issuer
-          client-id: myclientid
 adapters:
   r2dbc:
     host: ${DB_HOST:localhost}
@@ -24,7 +18,8 @@ logging:
     com:
       crediya: ${LOG_LEVEL:INFO}
 jwt:
-  json-exp-roles: /roles
+  secret: ${JWT_SECRET:defaultSecretKey}
+  expiration: ${JWT_EXPIRATION:3_600_000}
 management:
   endpoints:
     web:

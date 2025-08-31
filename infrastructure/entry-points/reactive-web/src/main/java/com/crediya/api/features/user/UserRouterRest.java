@@ -1,4 +1,4 @@
-package com.crediya.api;
+package com.crediya.api.features.user;
 
 import com.crediya.api.constants.paths.UserPath;
 import com.crediya.api.openapi.UserDocApi;

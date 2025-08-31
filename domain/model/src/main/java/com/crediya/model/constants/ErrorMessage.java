@@ -14,11 +14,13 @@ public class ErrorMessage {
 		.concat(String.valueOf(SalaryBaseRules.MAX));
 	public final String IDENTIFICATION_NOT_BLANK = "Identification is required and cannot be blank";
 	public final String INVALID_IDENTIFICATION = "Identification is invalid";
-	public final String PASSWORD_NOT_BLANK = "Password cannot be null or empty";
+	public final String NULL_PASSWORD = "Password cannot be null or empty";
 	public final String INVALID_PASSWORD = "Password must be at least 5 characters long";
 	
 	public final String NULL_USER = "User cannot be null";
 	public final String ALREADY_EXISTS_USER = "User with the given email or identification number already exists";
 	public final String USER_NOT_FOUND = "User not found";
+	
+	public final String INVALID_LOGIN = "Invalid email or password";
 	
 }

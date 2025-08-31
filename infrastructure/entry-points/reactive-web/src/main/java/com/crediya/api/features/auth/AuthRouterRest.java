@@ -1,4 +1,4 @@
-package com.crediya.api;
+package com.crediya.api.features.auth;
 
 import com.crediya.api.constants.paths.AuthPath;
 import com.crediya.api.helpers.ApiDocHelper;

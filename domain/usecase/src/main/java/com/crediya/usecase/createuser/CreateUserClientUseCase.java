@@ -45,56 +45,49 @@ public class CreateUserClientUseCase implements ICreateUserClientUseCase {
     }
     
     private Mono<User> validateFirstName(User user) {
-        if (user.getName() == null || user.getName().trim().isEmpty()) {
-            return Mono.error(new InvalidUserException(INVALID_USER_NAME));
-        }
-        return Mono.just(user);
+        return Mono.just(user)
+            .filter(u -> u.getName() != null && !u.getName().trim().isEmpty())
+            .switchIfEmpty(Mono.error(new InvalidUserException(INVALID_USER_NAME)));
     }
     
     private Mono<User> validateLastname(User user) {
-        if (user.getLastname() == null || user.getLastname().trim().isEmpty()) {
-            return Mono.error(new InvalidUserException(INVALID_USER_LASTNAME));
-        }
-        return Mono.just(user);
+        return Mono.just(user)
+            .filter(u -> u.getLastname() != null && !u.getLastname().trim().isEmpty())
+            .switchIfEmpty(Mono.error(new InvalidUserException(INVALID_USER_LASTNAME)));
     }
     
     private Mono<User> validateEmail(User user) {
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-            return Mono.error(new InvalidUserException(NULL_EMAIL));
-        }
-        if (!user.getEmail().matches(Regex.EMAIL)) {
-            return Mono.error(new InvalidUserException(INVALID_EMAIL));
-        }
-        return Mono.just(user);
+        return Mono.just(user)
+            .filter(u -> u.getEmail() != null && !u.getEmail().trim().isEmpty())
+            .switchIfEmpty(Mono.error(new InvalidUserException(NULL_EMAIL)))
+            .filter(u -> u.getEmail().matches(Regex.EMAIL))
+            .switchIfEmpty(Mono.error(new InvalidUserException(INVALID_EMAIL)));
     }
     
     private Mono<User> validateSalaryBase(User user) {
-        if (user.getSalaryBase() == null ||
-            user.getSalaryBase().compareTo(SalaryBaseRules.MIN) < 0 ||
-            user.getSalaryBase().compareTo(SalaryBaseRules.MAX) > 0) {
-            return Mono.error(new InvalidUserException(INVALID_SALARY_BASE));
-        }
-        return Mono.just(user);
+        return Mono.just(user)
+            .filter(
+                u -> u.getSalaryBase() != null
+                && u.getSalaryBase().compareTo(SalaryBaseRules.MIN) > 0
+                && u.getSalaryBase().compareTo(SalaryBaseRules.MAX) < 0
+            )
+            .switchIfEmpty(Mono.error(new InvalidUserException(INVALID_SALARY_BASE)));
     }
     
     private Mono<User> validateIdentification(User user) {
-        if (user.getIdentification() == null || user.getIdentification().trim().isEmpty()) {
-            return Mono.error(new InvalidUserException(IDENTIFICATION_NOT_BLANK));
-        }
-        if (!user.getIdentification().matches(Regex.IDENTIFICATION)) {
-            return Mono.error(new InvalidUserException(INVALID_IDENTIFICATION));
-        }
-        return Mono.just(user);
+        return Mono.just(user)
+            .filter(u -> u.getIdentification() != null && !u.getIdentification().trim().isEmpty())
+            .switchIfEmpty(Mono.error(new InvalidUserException(IDENTIFICATION_NOT_BLANK)))
+            .filter(u -> u.getIdentification().matches(Regex.IDENTIFICATION))
+            .switchIfEmpty(Mono.error(new InvalidUserException(INVALID_IDENTIFICATION)));
     }
     
     private Mono<User> validatePassword(User user) {
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            return Mono.error(new InvalidUserException(PASSWORD_NOT_BLANK));
-        }
-        if (user.getPassword().length() < MIN_LENGTH) {
-            return Mono.error(new InvalidUserException(INVALID_PASSWORD));
-        }
-        return Mono.just(user);
+        return Mono.just(user)
+            .filter(u -> u.getPassword() != null && !u.getPassword().trim().isEmpty())
+            .switchIfEmpty(Mono.error(new InvalidUserException(NULL_PASSWORD)))
+            .filter(u -> u.getPassword().length() >= MIN_LENGTH)
+            .switchIfEmpty(Mono.error(new InvalidUserException(INVALID_PASSWORD)));
     }
         
     private Mono<User> checkIfUserExists(User user) {

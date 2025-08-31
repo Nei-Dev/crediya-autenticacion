@@ -1,4 +1,4 @@
-package com.crediya.api;
+package com.crediya.api.helpers;
 
 import com.crediya.model.exceptions.user.InvalidUserException;
 import lombok.RequiredArgsConstructor;
