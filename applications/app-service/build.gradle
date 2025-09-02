@@ -1,6 +1,8 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
+	implementation project(':password-encoder')
+	implementation project(':token-service')
 	implementation project(':security')
 	implementation project(':reactive-web')
 	testImplementation 'org.springframework:spring-web'

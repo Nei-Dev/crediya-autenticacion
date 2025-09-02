@@ -3,7 +3,7 @@ package com.crediya.api.dto.output.user;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record UserResponseDTO(
+public record UserResponse(
 	Long id,
 	String fullname,
 	String email,

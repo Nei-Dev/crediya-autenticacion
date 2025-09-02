@@ -2,7 +2,7 @@ package com.crediya.api.features.user;
 
 import com.crediya.api.constants.ResponseMessage;
 import com.crediya.api.dto.input.user.CreateUserRequest;
-import com.crediya.api.dto.output.user.UserApiResponseDTO;
+import com.crediya.api.dto.output.user.UserApiResponse;
 import com.crediya.api.helpers.ValidatorApi;
 import com.crediya.api.mappers.user.UserEntityMapper;
 import com.crediya.api.mappers.user.UserResponseMapper;
@@ -39,7 +39,7 @@ public class UserHandler {
 			.doOnSuccess(user -> log.debug("User created successfully: {}", user.getEmail()))
 			.map(UserResponseMapper.INSTANCE::toUserResponse)
 			.flatMap(userResponseDTO -> ServerResponse.status(HttpStatus.CREATED)
-				.bodyValue(UserApiResponseDTO.of(userResponseDTO,
+				.bodyValue(UserApiResponse.of(userResponseDTO,
 					ResponseMessage.USER_CREATED
 				))
 			);

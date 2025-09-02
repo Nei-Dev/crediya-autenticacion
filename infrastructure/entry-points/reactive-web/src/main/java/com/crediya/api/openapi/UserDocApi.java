@@ -1,8 +1,8 @@
 package com.crediya.api.openapi;
 
 import com.crediya.api.dto.input.user.CreateUserRequest;
-import com.crediya.api.dto.output.user.UserApiResponseDTO;
-import com.crediya.api.dto.output.user.UserResponseDTO;
+import com.crediya.api.dto.output.user.UserApiResponse;
+import com.crediya.api.dto.output.user.UserResponse;
 import com.crediya.api.helpers.ApiDocHelper;
 import lombok.experimental.UtilityClass;
 import org.springdoc.core.fn.builders.operation.Builder;
@@ -50,7 +50,7 @@ public class UserDocApi {
 					.content(contentBuilder()
 						.mediaType(MediaType.APPLICATION_JSON_VALUE)
 						.schema(schemaBuilder()
-							.implementation(UserApiResponseDTO.class)
+							.implementation(UserApiResponse.class)
 						)
 					)
 				)
@@ -69,7 +69,7 @@ public class UserDocApi {
 					.content(contentBuilder()
 						.mediaType(MediaType.APPLICATION_JSON_VALUE)
 						.schema(schemaBuilder()
-							.implementation(UserResponseDTO.class)
+							.implementation(UserResponse.class)
 						)
 					)
 				)

@@ -1,6 +1,6 @@
 package com.crediya.api.mappers.user;
 
-import com.crediya.api.dto.output.user.UserResponseDTO;
+import com.crediya.api.dto.output.user.UserResponse;
 import com.crediya.model.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,5 +13,5 @@ public interface UserResponseMapper {
 	
 	@Mapping(target = "id", source = "idUser")
 	@Mapping(target = "fullname", expression = "java(user.getName() + \" \" + user.getLastname())")
-	UserResponseDTO toUserResponse(User user);
+	UserResponse toUserResponse(User user);
 }

@@ -1,6 +1,7 @@
 package com.crediya.api.config;
 
 import com.crediya.model.user.gateways.PasswordEncoderService;
+import com.crediya.model.user.gateways.TokenService;
 import com.crediya.model.user.gateways.UserRepository;
 import com.crediya.model.user.ports.ICreateUserClientUseCase;
 import com.crediya.model.user.ports.IFindUserByIdentificationUseCase;
@@ -25,7 +26,7 @@ public class UseCaseConfig {
 	}
 	
 	@Bean
-	public ILoginUseCase loginUseCase(PasswordEncoderService passwordEncoderService, UserRepository userRepository) {
-		return new LoginUseCase(passwordEncoderService, userRepository);
+	public ILoginUseCase loginUseCase(PasswordEncoderService passwordEncoderService, UserRepository userRepository, TokenService tokenService) {
+		return new LoginUseCase(passwordEncoderService, userRepository, tokenService);
 	}
 }
