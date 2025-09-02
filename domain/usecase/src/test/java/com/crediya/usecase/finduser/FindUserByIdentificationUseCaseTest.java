@@ -56,7 +56,11 @@ class FindUserByIdentificationUseCaseTest {
 	
 	@Test
 	void execute_invalidIdentification_throwsException() {
-		StepVerifier.create(useCase.execute("   "))
+		StepVerifier.create(useCase.execute(""))
+			.expectErrorMatches(e -> e instanceof InvalidUserException &&
+				e.getMessage().equals(INVALID_IDENTIFICATION))
+			.verify();
+		StepVerifier.create(useCase.execute("     "))
 			.expectErrorMatches(e -> e instanceof InvalidUserException &&
 				e.getMessage().equals(INVALID_IDENTIFICATION))
 			.verify();

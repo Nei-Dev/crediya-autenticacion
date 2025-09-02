@@ -5,6 +5,7 @@ import com.crediya.model.exceptions.user.AlreadyExistsUserException;
 import com.crediya.model.exceptions.user.InvalidUserException;
 import com.crediya.model.user.User;
 import com.crediya.model.user.UserRole;
+import com.crediya.model.user.gateways.PasswordEncoderService;
 import com.crediya.model.user.gateways.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,9 @@ class CrearUserClienteUseCaseTest {
     
     @Mock
     private UserRepository userRepository;
+    
+    @Mock
+    private PasswordEncoderService passwordEncoderService;
 
     private User validUser() {
         return User.builder()
@@ -36,18 +40,38 @@ class CrearUserClienteUseCaseTest {
             .email("name.lastname@example.com")
             .salaryBase(SalaryBaseRules.MIN.add(BigDecimal.valueOf(1000)))
             .identification("1234567890")
+            .password("123456")
             .build();
     }
 
     @Test
     void shouldCreateUserSuccesfully() {
         User user = validUser();
+        String encodedPassword = "encodedPassword";
+        User userWithEncodedPassword = User.builder()
+            .name(user.getName())
+            .lastname(user.getLastname())
+            .email(user.getEmail())
+            .salaryBase(user.getSalaryBase())
+            .identification(user.getIdentification())
+            .password(encodedPassword)
+            .role(UserRole.CLIENT)
+            .build();
         when(userRepository.findByIdentification(user.getIdentification())).thenReturn(Mono.empty());
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Mono.empty());
-        when(userRepository.createUser(any(User.class))).thenReturn(Mono.just(user));
+        when(passwordEncoderService.encode(user.getPassword())).thenReturn(encodedPassword);
+        when(userRepository.createUser(any(User.class))).thenReturn(Mono.just(userWithEncodedPassword));
 
         StepVerifier.create(useCase.execute(user))
-                .expectNextMatches(u -> u.getEmail().equals(user.getEmail()) && u.getRole() == UserRole.CLIENT)
+                .expectNextMatches(u ->
+                    u.getName().equals(user.getName())
+                    && u.getLastname().equals(user.getLastname())
+                    && u.getEmail().equals(user.getEmail())
+                    && u.getSalaryBase().equals(user.getSalaryBase())
+                    && u.getIdentification().equals(user.getIdentification())
+                    && u.getRole() == UserRole.CLIENT
+                    && u.getPassword().equals(encodedPassword)
+                )
                 .verifyComplete();
     }
 
@@ -140,6 +164,20 @@ class CrearUserClienteUseCaseTest {
         userSalarayInvalid.setSalaryBase(SalaryBaseRules.MIN.subtract(BigDecimal.valueOf(1)));
         StepVerifier.create(useCase.execute(userSalarayInvalid))
                 .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(INVALID_SALARY_BASE))
+                .verify();
+        
+        User userInvalidPassword = validUser();
+        userInvalidPassword.setPassword(null);
+        StepVerifier.create(useCase.execute(userInvalidPassword))
+                .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(NULL_PASSWORD))
+                .verify();
+        userInvalidPassword.setPassword("");
+        StepVerifier.create(useCase.execute(userInvalidPassword))
+                .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(NULL_PASSWORD))
+                .verify();
+        userInvalidPassword.setPassword("123");
+        StepVerifier.create(useCase.execute(userInvalidPassword))
+                .expectErrorMatches(e -> e instanceof InvalidUserException && e.getMessage().equals(INVALID_PASSWORD))
                 .verify();
     }
 }

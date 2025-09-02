@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.Objects;
+
 import static com.crediya.model.constants.ErrorMessage.*;
 
 @RequiredArgsConstructor
@@ -22,20 +24,22 @@ public class LoginUseCase implements ILoginUseCase {
 	@Override
 	public Mono<String> execute(String email, String password) {
 		return validateCredentials(email, password)
-			.then(userRepository.findByEmail(email))
+			.then(Mono.defer(() -> userRepository.findByEmail(email)))
+			.filter(Objects::nonNull)
+			.switchIfEmpty(Mono.error(new InvalidLoginException(INVALID_LOGIN)))
 			.filterWhen(user -> this.matches(password, user.getPassword()))
 			.switchIfEmpty(Mono.error(new InvalidLoginException(INVALID_LOGIN)))
 			.map(this::generateToken);
 	}
 	
 	private Mono<Void> validateCredentials(String email, String password) {
-		return Mono.justOrEmpty(email)
-			.filter(e -> !e.trim().isEmpty())
-			.switchIfEmpty(Mono.error(new InvalidLoginException(NULL_EMAIL)))
-			.then(Mono.justOrEmpty(password)
-				.filter(p -> !p.trim().isEmpty())
-				.switchIfEmpty(Mono.error(new InvalidLoginException(NULL_PASSWORD))))
-			.then();
+		if (email == null || email.trim().isEmpty()) {
+			return Mono.error(new InvalidLoginException(NULL_EMAIL));
+		}
+		if (password == null || password.trim().isEmpty()) {
+			return Mono.error(new InvalidLoginException(NULL_PASSWORD));
+		}
+		return Mono.empty();
 	}
 	
 	private Mono<Boolean> matches(String rawPassword, String encodePassword) {
