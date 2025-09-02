@@ -17,17 +17,17 @@ import static org.springdoc.core.fn.builders.schema.Builder.schemaBuilder;
 @UtilityClass
 public class UserDocApi {
 	
-	public final String TAG_USER = "User";
+	public static final String TAG_USER = "User";
 	
 	// Create User
-	public final String OPERATION_ID_CREATE = "createUser";
-	public final String SUMMARY_CREATE = "Create a new user in the system";
-	public final String DESCRIPTION_CREATED = "User created successfully";
+	public static final String OPERATION_ID_CREATE = "createUser";
+	public static final String SUMMARY_CREATE = "Create a new user in the system";
+	public static final String DESCRIPTION_CREATED = "User created successfully";
 	
 	// Find User by Identification
-	public final String OPERATION_ID_FIND_BY_IDENTIFICATION = "findUserByIdentification";
-	public final String SUMMARY_FIND_BY_IDENTIFICATION = "Find a user by their identification number";
-	public final String DESCRIPTION_FIND_BY_IDENTIFICATION = "User found successfully";
+	public static final String OPERATION_ID_FIND_BY_IDENTIFICATION = "findUserByIdentification";
+	public static final String SUMMARY_FIND_BY_IDENTIFICATION = "Find a user by their identification number";
+	public static final String DESCRIPTION_FIND_BY_IDENTIFICATION = "User found successfully";
 	
 	public void createUserClientDoc(Builder builder) {
 		ApiDocHelper.commonErrorResponse(

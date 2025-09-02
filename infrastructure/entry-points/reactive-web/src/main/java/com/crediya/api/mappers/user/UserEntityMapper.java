@@ -12,5 +12,6 @@ public interface UserEntityMapper {
 	UserEntityMapper INSTANCE = Mappers.getMapper(UserEntityMapper.class);
 	
 	@Mapping(target = "idUser", ignore = true)
+	@Mapping(target = "role", ignore = true)
 	User toUser(CreateUserRequest createUserRequest);
 }

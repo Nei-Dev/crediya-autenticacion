@@ -5,10 +5,14 @@ import com.crediya.model.exceptions.BusinessException;
 import com.crediya.model.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.resource.NoResourceFoundException;
 import org.springframework.web.server.ServerWebExchange;
@@ -22,13 +26,13 @@ import java.util.function.BiFunction;
 import static com.crediya.api.constants.ErrorMessage.GENERIC_ERROR;
 
 @Slf4j
-@Order(-2)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 public class GlobalExceptionHandler implements WebExceptionHandler {
 	
 	private final ObjectMapper objectMapper;
 	
-	private final Map<Class<? extends RuntimeException>, BiFunction<Throwable, ServerWebExchange, ErrorResponse>> handlers = new HashMap<>();
+	private final Map<Class<? extends Throwable>, BiFunction<Throwable, ServerWebExchange, ErrorResponse>> handlers = new HashMap<>();
 	
 	public GlobalExceptionHandler(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
@@ -40,6 +44,14 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
 		
 		handlers.put(NoResourceFoundException.class, (ex, exchange) ->
 			ErrorResponse.notFound("Resource not found"));
+		
+		handlers.put(
+			AccessDeniedException.class, (ex, exchange) ->
+			ErrorResponse.forbidden("Access denied"));
+		
+		handlers.put(
+			AuthenticationException.class, (ex, exchange) ->
+			ErrorResponse.unauthorized("Unauthorized access"));
 	}
 	
 	@NonNull

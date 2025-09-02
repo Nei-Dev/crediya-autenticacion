@@ -1,5 +1,6 @@
 package com.crediya.tokenservice;
 
+import com.crediya.model.exceptions.user.InvalidAuthException;
 import com.crediya.model.user.AuthClaims;
 import com.crediya.model.user.User;
 import com.crediya.model.user.UserClaims;
@@ -16,6 +17,8 @@ import reactor.core.publisher.Mono;
 
 import java.security.Key;
 import java.util.Date;
+
+import static com.crediya.tokenservice.constants.Mesage.TOKEN_INVALID;
 
 @Component
 public class JwtProviderAdapter implements TokenService {
@@ -56,7 +59,7 @@ public class JwtProviderAdapter implements TokenService {
 				UserRole.valueOf(claims.get(AuthClaims.ROLE.getValue(), String.class))
 			));
 		} catch (Exception ex) {
-			return Mono.error(new RuntimeException("Errorrrrr validating token", ex));
+			return Mono.error(new InvalidAuthException(TOKEN_INVALID));
 		}
 	}
 	

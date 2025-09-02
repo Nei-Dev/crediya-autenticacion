@@ -1,7 +1,7 @@
 package com.crediya.api.features.auth;
 
 import com.crediya.api.constants.paths.AuthPath;
-import com.crediya.api.helpers.ApiDocHelper;
+import com.crediya.api.openapi.AuthDocApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +22,7 @@ public class AuthRouterRest {
 			.POST(
 				authPath.getLogin(),
 				handler::login,
-				builder -> ApiDocHelper.commonErrorResponse(
-					builder
-				)
+				AuthDocApi::loginDoc
 			)
 			.build();
 	}
