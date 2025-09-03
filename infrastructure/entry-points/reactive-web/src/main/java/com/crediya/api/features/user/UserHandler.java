@@ -51,7 +51,7 @@ public class UserHandler {
 			.filter(item -> !item.isEmpty())
 			.switchIfEmpty(Mono.error(new InvalidUserException(IDENTIFICATION_NOT_BLANK)))
 			.flatMap(findUserByIdentificationUseCase::execute)
-			.doOnSubscribe(subscription -> log.trace("Received request to find user by identification: {}", subscription))
+			.doOnSubscribe(subscription -> log.trace("Received request to find user by identification"))
 			.doOnSuccess(user -> log.debug("User found successfully: {}", user.getEmail()))
 			.map(UserResponseMapper.INSTANCE::toUserResponse)
 			.flatMap(userResponseDTO -> ServerResponse.status(HttpStatus.OK)

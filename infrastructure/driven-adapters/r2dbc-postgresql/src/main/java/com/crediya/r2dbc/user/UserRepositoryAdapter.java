@@ -30,11 +30,13 @@ public class UserRepositoryAdapter implements UserRepository {
 			.name();
 		return transactionalOperator.transactional(rolReactiveRepository.findByName(userRole)
 			.doOnSubscribe(subscription -> log.trace("Searching role in the database: {}", userRole))
+			.doOnSuccess(rol -> log.info("Role found in the database: {}", rol.getName()))
 			.switchIfEmpty(Mono.error(new RoleNotFoundException(ErrorMessage.ROLE_NOT_FOUND)))
 			.flatMap(rol -> {
 				userData.setIdRole(rol.getId());
 				return repository.save(userData)
-					.doOnSubscribe(subscription -> log.trace("Creating user in the database: {}", userData.getEmail()));
+					.doOnSubscribe(subscription -> log.trace("Creating user in the database: {}", userData.getEmail()))
+					.doOnSuccess(data -> log.info("User created in the database: {}", data.getEmail()));
 			})
 			.flatMap(this::mapToUser));
 	}
@@ -43,6 +45,13 @@ public class UserRepositoryAdapter implements UserRepository {
 	public Mono<User> findByEmail(String email) {
 		return repository.findByEmail(email)
 			.doOnSubscribe(subscription -> log.trace("Searching user in the database: {}", email))
+			.doOnSuccess(result -> {
+				if (result != null) {
+					log.info("User found in the database by email: {}", result.getEmail());
+				} else {
+					log.info("User not found in the database with email: {}", email);
+				}
+			})
 			.flatMap(this::mapToUser);
 	}
 	
@@ -50,6 +59,13 @@ public class UserRepositoryAdapter implements UserRepository {
 	public Mono<User> findByIdentification(String identification) {
 		return repository.findByIdentification(identification)
 			.doOnSubscribe(subscription -> log.trace("Searching user in the database by identification: {}", identification))
+			.doOnSuccess(result -> {
+				if (result != null) {
+					log.info("User found in the database by identification: {}", result.getEmail());
+				} else {
+					log.info("User not found in the database with identification: {}", identification);
+				}
+			})
 			.flatMap(this::mapToUser);
 	}
 	

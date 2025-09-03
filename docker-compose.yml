@@ -3,11 +3,11 @@ services:
     image: postgres:16
     container_name: auth_db
     environment:
-        POSTGRES_DB: autenticacion_db
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: admin
+        POSTGRES_DB: ${DB_NAME:-auth_db}
+        POSTGRES_USER: ${DB_USER:-postgres}
+        POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-        - "5440:5432"
+        - "${DB_PORT:-5432}:5432"
     volumes:
         - ./postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -22,6 +22,6 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
-    command: -url=jdbc:postgresql://postgres_db:5432/autenticacion_db -user=postgres -password=admin -schemas=public -connectRetries=20 migrate
+    command: -url=jdbc:postgresql://postgres_db:5432/${DB_NAME} -user=${DB_USER} -password=${DB_PASSWORD} -schemas=${DB_SCHEMA} -connectRetries=20 migrate
     volumes:
       - ./applications/app-service/src/main/resources/db/migration:/flyway/sql/migration

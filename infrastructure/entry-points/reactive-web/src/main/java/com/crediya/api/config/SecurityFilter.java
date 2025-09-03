@@ -64,8 +64,8 @@ public class SecurityFilter implements WebFluxConfigurer {
             .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
             .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
             .authorizeExchange(authorize -> authorize
-                .pathMatchers(authPath.getLogin()).permitAll()
                 .pathMatchers(ALLOWED_PATHS_SWAGGER).permitAll()
+                .pathMatchers(authPath.getLogin()).permitAll()
                 .pathMatchers(POST, userPath.getUser()).hasAnyRole(UserRole.MANAGER.name(), UserRole.ADMIN.name())
                 .anyExchange().authenticated()
             )
