@@ -44,6 +44,7 @@ public class JwtProviderAdapter implements TokenService {
 			.setSubject(user.getEmail())
 			.claim(AuthClaims.USER_ID.getValue(), user.getIdUser())
 			.claim(AuthClaims.ROLE.getValue(), user.getRole().name())
+			.claim(AuthClaims.IDENTIFICATION.getValue(), user.getIdentification())
 			.setIssuedAt(now)
 			.setExpiration(expiryDate)
 			.signWith(key, SignatureAlgorithm.HS256)
@@ -58,6 +59,7 @@ public class JwtProviderAdapter implements TokenService {
 			return Mono.just(new UserClaims(
 				claims.get(AuthClaims.USER_ID.getValue(), Long.class),
 				claims.getSubject(),
+				claims.get(AuthClaims.IDENTIFICATION.getValue(), String.class),
 				UserRole.valueOf(claims.get(AuthClaims.ROLE.getValue(), String.class))
 			));
 		} catch (Exception ex) {

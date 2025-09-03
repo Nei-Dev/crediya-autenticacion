@@ -87,7 +87,7 @@ public class SecurityFilter implements WebFluxConfigurer {
                         new SimpleGrantedAuthority(ROLE_PREFIX.concat(userClaims.role().name()))
                     );
                     return new UsernamePasswordAuthenticationToken(
-                        userClaims.email(), null, authorities
+                        userClaims, null, authorities
                     );
                 });
         };

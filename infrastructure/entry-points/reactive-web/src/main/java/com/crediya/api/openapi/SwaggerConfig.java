@@ -13,7 +13,7 @@ public class SwaggerConfig {
 	private static final String VERSION = "1.0.0";
 	
 	@Bean
-	public OpenAPI creditApplicationOpenAPI() {
+	public OpenAPI authenticationOpenAPI() {
 		return new OpenAPI()
 			.info(new Info()
 				.title(TITLE)

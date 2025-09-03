@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum AuthClaims {
 	
 	USER_ID("userId"),
+	IDENTIFICATION("identification"),
 	ROLE("role");
 	
 	private final String value;
