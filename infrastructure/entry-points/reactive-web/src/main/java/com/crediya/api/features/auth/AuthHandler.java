@@ -24,9 +24,10 @@ public class AuthHandler {
 	
 	public Mono<ServerResponse> login(ServerRequest serverRequest){
 		return serverRequest.bodyToMono(LoginRequest.class)
-			.doOnSubscribe(subscription -> log.trace("Received login request: {}", subscription))
+			.doOnSubscribe(subscription -> log.trace("Received login request"))
 			.flatMap(validatorApi::validate)
 			.flatMap(req -> loginUseCase.execute(req.email(), req.password()))
+			.doOnSuccess(token -> log.debug("Login successful, token generated"))
 			.flatMap(token -> ServerResponse.ok()
 				.bodyValue(ApiResponse.of(
 					new AuthResponse(token),

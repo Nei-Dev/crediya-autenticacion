@@ -12,7 +12,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.util.Objects;
 
-import static com.crediya.model.constants.ErrorMessage.*;
+import static com.crediya.model.constants.ErrorValidationMessage.*;
 
 @RequiredArgsConstructor
 public class LoginUseCase implements ILoginUseCase {
@@ -29,7 +29,7 @@ public class LoginUseCase implements ILoginUseCase {
 			.switchIfEmpty(Mono.error(new InvalidLoginException(INVALID_LOGIN)))
 			.filterWhen(user -> this.matches(password, user.getPassword()))
 			.switchIfEmpty(Mono.error(new InvalidLoginException(INVALID_LOGIN)))
-			.map(this::generateToken);
+			.flatMap(this::generateToken);
 	}
 	
 	private Mono<Void> validateCredentials(String email, String password) {
@@ -47,7 +47,7 @@ public class LoginUseCase implements ILoginUseCase {
 			.subscribeOn(Schedulers.boundedElastic());
 	}
 	
-	private String generateToken(User user) {
+	private Mono<String> generateToken(User user) {
 		return tokenService.generateToken(user);
 	}
 }

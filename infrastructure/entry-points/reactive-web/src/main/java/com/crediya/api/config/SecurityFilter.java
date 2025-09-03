@@ -2,33 +2,35 @@ package com.crediya.api.config;
 
 import com.crediya.api.constants.paths.AuthPath;
 import com.crediya.api.constants.paths.UserPath;
+import com.crediya.api.dto.output.ErrorResponse;
+import com.crediya.api.helpers.DefaultResponseHelper;
 import com.crediya.model.user.UserRole;
 import com.crediya.model.user.gateways.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
-import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static com.crediya.api.constants.ErrorMessage.ACCESS_DENIED;
+import static com.crediya.api.constants.ErrorMessage.UNAUTHORIZED;
 import static org.springframework.http.HttpMethod.POST;
 
 @Slf4j
@@ -50,6 +52,7 @@ public class SecurityFilter implements WebFluxConfigurer {
     private final AuthPath authPath;
     private final UserPath userPath;
     private final TokenService tokenService;
+    private final DefaultResponseHelper defaultResponseHelper;
 
     @Bean
     public SecurityWebFilterChain filterChain(
@@ -65,6 +68,10 @@ public class SecurityFilter implements WebFluxConfigurer {
                 .pathMatchers(ALLOWED_PATHS_SWAGGER).permitAll()
                 .pathMatchers(POST, userPath.getUser()).hasAnyRole(UserRole.MANAGER.name(), UserRole.ADMIN.name())
                 .anyExchange().authenticated()
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint(this::handleSecurityException)
+                .accessDeniedHandler(this::handleAccessDenied)
             )
             .addFilterAt(jwtAuthFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         return http.build();
@@ -102,46 +109,14 @@ public class SecurityFilter implements WebFluxConfigurer {
         return filter;
         
     }
-//
-//    // ✅ Manejador para 401 - No autenticado
-//    @Bean
-//    public ServerAuthenticationEntryPoint customAuthenticationEntryPoint() {
-//        return (exchange, ex) -> {
-//            ServerHttpResponse response = exchange.getResponse();
-//            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-//            response.getHeaders().add("Content-Type", "application/json");
-//
-//            String body = """
-//                {
-//                    "error": "Unauthorized",
-//                    "message": "Token de autenticación requerido",
-//                    "status": 401
-//                }
-//                """;
-//
-//            DataBuffer buffer = response.bufferFactory().wrap(body.getBytes());
-//            return response.writeWith(Mono.just(buffer));
-//        };
-//    }
-//
-//    // ✅ Manejador para 403 - Sin permisos
-//    @Bean
-//    public ServerAccessDeniedHandler customAccessDeniedHandler() {
-//        return (exchange, denied) -> {
-//            ServerHttpResponse response = exchange.getResponse();
-//            response.setStatusCode(HttpStatus.FORBIDDEN);
-//            response.getHeaders().add("Content-Type", "application/json");
-//
-//            String body = """
-//                {
-//                    "error": "Forbidden",
-//                    "message": "No tienes permisos para acceder a este recurso",
-//                    "status": 403
-//                }
-//                """;
-//
-//            DataBuffer buffer = response.bufferFactory().wrap(body.getBytes());
-//            return response.writeWith(Mono.just(buffer));
-//        };
-//    }
+    
+    private Mono<Void> handleSecurityException(ServerWebExchange exchange, AuthenticationException ex) {
+        ErrorResponse errorResponse = ErrorResponse.unauthorized(UNAUTHORIZED);
+        return defaultResponseHelper.writeJsonResponse(exchange.getResponse(), errorResponse);
+    }
+    
+    private Mono<Void> handleAccessDenied(ServerWebExchange exchange, AccessDeniedException ex) {
+        ErrorResponse response = ErrorResponse.unauthorized(ACCESS_DENIED);
+        return defaultResponseHelper.writeJsonResponse(exchange.getResponse(), response);
+    }
 }

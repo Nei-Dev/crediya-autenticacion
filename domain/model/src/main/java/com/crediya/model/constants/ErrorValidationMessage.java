@@ -3,7 +3,7 @@ package com.crediya.model.constants;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ErrorMessage {
+public class ErrorValidationMessage {
 	
 	public final String INVALID_USER_NAME = "Username cannot be null or empty";
 	public final String INVALID_USER_LASTNAME = "Lastname cannot be null or empty";

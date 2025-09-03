@@ -1,17 +1,14 @@
 package com.crediya.api;
 
 import com.crediya.api.dto.output.ErrorResponse;
+import com.crediya.api.helpers.DefaultResponseHelper;
 import com.crediya.model.exceptions.BusinessException;
 import com.crediya.model.exceptions.NotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.resource.NoResourceFoundException;
@@ -23,19 +20,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static com.crediya.api.constants.ErrorMessage.GENERIC_ERROR;
+import static com.crediya.api.constants.ErrorMessage.*;
 
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 public class GlobalExceptionHandler implements WebExceptionHandler {
 	
-	private final ObjectMapper objectMapper;
+	private final DefaultResponseHelper defaultResponseHelper;
 	
 	private final Map<Class<? extends Throwable>, BiFunction<Throwable, ServerWebExchange, ErrorResponse>> handlers = new HashMap<>();
 	
-	public GlobalExceptionHandler(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
+	public GlobalExceptionHandler(DefaultResponseHelper defaultResponseHelper) {
+		this.defaultResponseHelper = defaultResponseHelper;
+		
 		handlers.put(BusinessException.class, (ex, exchange) ->
 			ErrorResponse.badRequest(ex.getMessage()));
 		
@@ -43,15 +41,15 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
 			ErrorResponse.notFound(ex.getMessage()));
 		
 		handlers.put(NoResourceFoundException.class, (ex, exchange) ->
-			ErrorResponse.notFound("Resource not found"));
+			ErrorResponse.notFound(NOT_FOUND));
 		
 		handlers.put(
 			AccessDeniedException.class, (ex, exchange) ->
-			ErrorResponse.forbidden("Access denied"));
+			ErrorResponse.forbidden(ACCESS_DENIED));
 		
 		handlers.put(
 			AuthenticationException.class, (ex, exchange) ->
-			ErrorResponse.unauthorized("Unauthorized access"));
+			ErrorResponse.unauthorized(UNAUTHORIZED));
 	}
 	
 	@NonNull
@@ -66,21 +64,7 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
 				return ErrorResponse.internalServerError(GENERIC_ERROR);
 			});
 		
-		HttpStatus status = HttpStatus.valueOf(response.getCode());
-		
-		exchange.getResponse().setStatusCode(status);
-		exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-		
-		try {
-			byte[] json = objectMapper.writeValueAsBytes(response);
-			return exchange.getResponse()
-				.writeWith(Mono.just(exchange.getResponse()
-					.bufferFactory().wrap(json)));
-		} catch (Exception e) {
-			log.error("Error serializing ErrorResponse: {}", e.getMessage(), e);
-			exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
-			return exchange.getResponse().setComplete();
-		}
+		return defaultResponseHelper.writeJsonResponse(exchange.getResponse(), response);
 	}
 	
 }

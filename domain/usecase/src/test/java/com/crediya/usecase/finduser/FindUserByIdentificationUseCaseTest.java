@@ -14,8 +14,8 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 
-import static com.crediya.model.constants.ErrorMessage.INVALID_IDENTIFICATION;
-import static com.crediya.model.constants.ErrorMessage.USER_NOT_FOUND;
+import static com.crediya.model.constants.ErrorValidationMessage.INVALID_IDENTIFICATION;
+import static com.crediya.model.constants.ErrorValidationMessage.USER_NOT_FOUND;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

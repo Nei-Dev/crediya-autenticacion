@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static com.crediya.model.constants.ErrorMessage.*;
+import static com.crediya.model.constants.ErrorValidationMessage.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +60,7 @@ class LoginUseCaseTest {
 
 		when(userRepository.findByEmail(email)).thenReturn(Mono.just(userWithEncodedPassword));
 		when(passwordEncoderService.matches(password, encodedPassword)).thenReturn(true);
-		when(tokenService.generateToken(userWithEncodedPassword)).thenReturn(token);
+		when(tokenService.generateToken(userWithEncodedPassword)).thenReturn(Mono.just(token));
 
 		StepVerifier.create(useCase.execute(email, password))
 			.expectNext(token)

@@ -18,7 +18,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.crediya.api.constants.ValidationMessage.IDENTIFICATION_NOT_BLANK;
-import static com.crediya.model.constants.ErrorMessage.NULL_USER;
+import static com.crediya.model.constants.ErrorValidationMessage.NULL_USER;
 
 @Slf4j
 @Component
@@ -31,7 +31,7 @@ public class UserHandler {
 	
 	public Mono<ServerResponse> createUserClient(ServerRequest serverRequest){
 		return serverRequest.bodyToMono(CreateUserRequest.class)
-			.doOnSubscribe(subscription -> log.trace("Received request to create user: {}", subscription))
+			.doOnSubscribe(subscription -> log.trace("Received request to create user"))
 			.switchIfEmpty(Mono.error(new InvalidUserException(NULL_USER)))
 			.flatMap(validatorApi::validate)
 			.map(UserEntityMapper.INSTANCE::toUser)

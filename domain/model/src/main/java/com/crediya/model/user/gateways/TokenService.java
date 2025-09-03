@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 public interface TokenService {
 	
-	String generateToken(User user);
+	Mono<String> generateToken(User user);
 	
 	Mono<UserClaims> validateToken(String token);
 	

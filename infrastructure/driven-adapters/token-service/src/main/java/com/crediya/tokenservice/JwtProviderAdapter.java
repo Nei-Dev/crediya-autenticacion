@@ -35,18 +35,20 @@ public class JwtProviderAdapter implements TokenService {
 	}
 	
 	@Override
-	public String generateToken(User user) {
+	public Mono<String> generateToken(User user) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 		
-		return Jwts.builder()
+		return Mono.just(
+			Jwts.builder()
 			.setSubject(user.getEmail())
 			.claim(AuthClaims.USER_ID.getValue(), user.getIdUser())
 			.claim(AuthClaims.ROLE.getValue(), user.getRole().name())
 			.setIssuedAt(now)
 			.setExpiration(expiryDate)
 			.signWith(key, SignatureAlgorithm.HS256)
-			.compact();
+			.compact()
+		);
 	}
 	
 	@Override

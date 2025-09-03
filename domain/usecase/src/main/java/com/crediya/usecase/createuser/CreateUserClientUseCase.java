@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
-import static com.crediya.model.constants.ErrorMessage.*;
+import static com.crediya.model.constants.ErrorValidationMessage.*;
 import static com.crediya.model.constants.PasswordRules.MIN_LENGTH;
 
 @RequiredArgsConstructor

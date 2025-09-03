@@ -17,7 +17,7 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 
-import static com.crediya.model.constants.ErrorMessage.*;
+import static com.crediya.model.constants.ErrorValidationMessage.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
