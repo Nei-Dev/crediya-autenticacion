@@ -3,6 +3,7 @@ package com.crediya.api.config;
 import com.crediya.api.constants.paths.AuthPath;
 import com.crediya.api.constants.paths.UserPath;
 import com.crediya.api.dto.output.ErrorResponse;
+import com.crediya.api.filters.CorrelationWebFilter;
 import com.crediya.api.helpers.DefaultResponseHelper;
 import com.crediya.model.user.UserRole;
 import com.crediya.model.user.gateways.TokenService;
@@ -38,7 +39,7 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 @EnableReactiveMethodSecurity
-public class SecurityFilter implements WebFluxConfigurer {
+public class SecurityFilterConfig implements WebFluxConfigurer {
     
     private static final String BEARER = "Bearer ";
     private static final String ROLE_PREFIX = "ROLE_";
@@ -57,7 +58,8 @@ public class SecurityFilter implements WebFluxConfigurer {
     @Bean
     public SecurityWebFilterChain filterChain(
         ServerHttpSecurity http,
-        AuthenticationWebFilter jwtAuthFilter
+        AuthenticationWebFilter jwtAuthFilter,
+        CorrelationWebFilter correlationWebFilter
     ) {
         http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
@@ -66,13 +68,14 @@ public class SecurityFilter implements WebFluxConfigurer {
             .authorizeExchange(authorize -> authorize
                 .pathMatchers(ALLOWED_PATHS_SWAGGER).permitAll()
                 .pathMatchers(authPath.getLogin()).permitAll()
-                .pathMatchers(POST, userPath.getUser()).hasAnyRole(UserRole.MANAGER.name(), UserRole.ADMIN.name())
+                .pathMatchers(POST, userPath.getCreateUser()).hasAnyRole(UserRole.MANAGER.name(), UserRole.ADMIN.name())
                 .anyExchange().authenticated()
             )
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(this::handleSecurityException)
                 .accessDeniedHandler(this::handleAccessDenied)
             )
+            .addFilterAt(correlationWebFilter, SecurityWebFiltersOrder.FIRST)
             .addFilterAt(jwtAuthFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         return http.build();
     }
@@ -87,7 +90,7 @@ public class SecurityFilter implements WebFluxConfigurer {
                         new SimpleGrantedAuthority(ROLE_PREFIX.concat(userClaims.role().name()))
                     );
                     return new UsernamePasswordAuthenticationToken(
-                        userClaims, null, authorities
+                        userClaims, token, authorities
                     );
                 });
         };

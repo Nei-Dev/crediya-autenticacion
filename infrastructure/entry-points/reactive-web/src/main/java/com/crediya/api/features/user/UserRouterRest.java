@@ -20,12 +20,12 @@ public class UserRouterRest {
 	public RouterFunction<ServerResponse> userRouterFunction(UserHandler handler) {
 		return route()
 			.POST(
-				userPath.getUser(),
+				userPath.getCreateUser(),
 				handler::createUserClient,
 				UserDocApi::createUserClientDoc
 			)
 			.GET(
-				userPath.getUserByIdentification(),
+				userPath.getFindUserByIdentification(),
 				handler::findUserByIdentification,
 				UserDocApi::findUserByIdentificationDoc
 			)

@@ -24,6 +24,11 @@ public class AuthRouterRest {
 				handler::login,
 				AuthDocApi::loginDoc
 			)
+			.GET(
+				authPath.getFindMe(),
+				handler::findMe,
+				AuthDocApi::findUserMeDoc
+			)
 			.build();
 	}
 }

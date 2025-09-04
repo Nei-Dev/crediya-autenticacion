@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "app.paths.user")
 public class UserPath {
 	
-	private String user;
-	private String userByIdentification;
+	private String createUser;
+	private String findUserByIdentification;
 	
 }

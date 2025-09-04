@@ -10,5 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AuthPath {
 	
 	private String login;
+	private String findMe;
 	
 }
