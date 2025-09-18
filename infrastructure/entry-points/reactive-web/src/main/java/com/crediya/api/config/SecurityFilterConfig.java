@@ -49,6 +49,9 @@ public class SecurityFilterConfig implements WebFluxConfigurer {
         "/swagger-ui/**",
         "/webjars/**"
     };
+    private static final String[] ALLOWED_PATHS_ACTUATOR = {
+        "/actuator/health",
+    };
 
     private final AuthPath authPath;
     private final UserPath userPath;
@@ -67,6 +70,7 @@ public class SecurityFilterConfig implements WebFluxConfigurer {
             .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
             .authorizeExchange(authorize -> authorize
                 .pathMatchers(ALLOWED_PATHS_SWAGGER).permitAll()
+                .pathMatchers(ALLOWED_PATHS_ACTUATOR).permitAll()
                 .pathMatchers(authPath.getLogin()).permitAll()
                 .pathMatchers(POST, userPath.getCreateUser()).hasAnyRole(UserRole.MANAGER.name(), UserRole.ADMIN.name())
                 .anyExchange().authenticated()
