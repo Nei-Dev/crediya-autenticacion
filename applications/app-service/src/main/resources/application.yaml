@@ -38,4 +38,4 @@ app:
       findUserByIdentification: /api/v1/users/identification/{identificationNumber}
     auth:
       login: /api/v1/login
-      findMe: /api/v1/me
+      findMe: /api/v1/auth/me
