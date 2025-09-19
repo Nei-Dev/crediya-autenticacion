@@ -1,12 +1,12 @@
 server:
   port: ${PORT:8080}
-  servlet:
-      context-path: /auth
 spring:
   application:
     name: auth
   devtools:
     add-properties: false
+  webflux:
+    base-path: /auth
 adapters:
   r2dbc:
     host: ${DB_HOST:localhost}
