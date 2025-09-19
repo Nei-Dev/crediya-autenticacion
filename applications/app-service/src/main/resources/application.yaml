@@ -34,8 +34,8 @@ cors:
 app:
   paths:
     user:
-      createUser: /api/v1/users
-      findUserByIdentification: /api/v1/users/identification/{identificationNumber}
+      createUser: /auth/api/v1/users
+      findUserByIdentification: /auth/api/v1/users/identification/{identificationNumber}
     auth:
-      login: /api/v1/login
-      findMe: /api/v1/auth/me
+      login: /auth/api/v1/login
+      findMe: /auth/api/v1/auth/me
